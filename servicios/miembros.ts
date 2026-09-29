@@ -1,27 +1,29 @@
 import { query } from '@/lib/db';
-import { Miembro } from '@/tipos';
+import { Miembro, MiembroConHogar } from '@/tipos';
 
 /**
- * Consulta 2 (INSERT):
- * Inserta un nuevo miembro en la base de datos con contraseña hasheada.
+ * Consulta 6 (INSERT):
+ * Inserta un nuevo miembro en la base de datos vinculado a un hogar.
  */
 export async function insertarMiembro(datos: {
   nombre_completo: string;
   correo: string;
   telefono?: string | null;
   contrasena?: string | null;
+  id_hogar?: number | null;
   estado_activo?: boolean;
 }): Promise<Miembro> {
   const sql = `
-    INSERT INTO MIEMBRO (nombre_completo, correo, telefono, contrasena, estado_activo)
-    VALUES ($1, $2, $3, $4, COALESCE($5, TRUE))
-    RETURNING id_miembro, nombre_completo, correo, telefono, estado_activo;
+    INSERT INTO MIEMBRO (nombre_completo, correo, telefono, contrasena, id_hogar, estado_activo)
+    VALUES ($1, $2, $3, $4, $5, COALESCE($6, TRUE))
+    RETURNING id_miembro, id_hogar, nombre_completo, correo, telefono, estado_activo;
   `;
   const params = [
     datos.nombre_completo,
     datos.correo,
     datos.telefono || null,
     datos.contrasena || null,
+    datos.id_hogar || null,
     datos.estado_activo ?? true,
   ];
 
@@ -30,8 +32,8 @@ export async function insertarMiembro(datos: {
 }
 
 /**
- * Consulta 4 (UPDATE):
- * Actualiza el teléfono y datos de un miembro existente.
+ * Consulta 8 (UPDATE):
+ * Actualiza teléfono, datos y hogar de un miembro existente.
  */
 export async function actualizarDatosMiembro(
   id_miembro: number,
@@ -40,6 +42,7 @@ export async function actualizarDatosMiembro(
     nombre_completo?: string;
     correo?: string;
     contrasena?: string | null;
+    id_hogar?: number | null;
   }
 ): Promise<Miembro | null> {
   const sql = `
@@ -48,15 +51,17 @@ export async function actualizarDatosMiembro(
       telefono = COALESCE($1, telefono),
       nombre_completo = COALESCE($2, nombre_completo),
       correo = COALESCE($3, correo),
-      contrasena = COALESCE($4, contrasena)
-    WHERE id_miembro = $5
-    RETURNING id_miembro, nombre_completo, correo, telefono, estado_activo;
+      contrasena = COALESCE($4, contrasena),
+      id_hogar = COALESCE($5, id_hogar)
+    WHERE id_miembro = $6
+    RETURNING id_miembro, id_hogar, nombre_completo, correo, telefono, estado_activo;
   `;
   const params = [
     datos.telefono !== undefined ? datos.telefono : null,
     datos.nombre_completo || null,
     datos.correo || null,
     datos.contrasena || null,
+    datos.id_hogar !== undefined ? datos.id_hogar : null,
     id_miembro,
   ];
 
@@ -65,15 +70,14 @@ export async function actualizarDatosMiembro(
 }
 
 /**
- * Consulta 8 (DELETE / Baja Lógica):
- * Cambia el estado_activo de un miembro a FALSE sin borrar el registro físico.
+ * Baja Lógica: Cambia estado_activo a FALSE
  */
 export async function bajaLogicaMiembro(id_miembro: number): Promise<Miembro | null> {
   const sql = `
     UPDATE MIEMBRO
     SET estado_activo = FALSE
     WHERE id_miembro = $1
-    RETURNING id_miembro, nombre_completo, correo, telefono, estado_activo;
+    RETURNING id_miembro, id_hogar, nombre_completo, correo, telefono, estado_activo;
   `;
   const params = [id_miembro];
 
@@ -82,8 +86,8 @@ export async function bajaLogicaMiembro(id_miembro: number): Promise<Miembro | n
 }
 
 /**
- * Consulta 9 (SELECT Simple):
- * Selecciona nombre y correo de los miembros donde estado_activo sea TRUE.
+ * Consulta 12 (SELECT 1 Simple):
+ * Selecciona nombre y correo de miembros activos.
  */
 export async function listarMiembrosActivos(): Promise<Pick<Miembro, 'nombre_completo' | 'correo'>[]> {
   const sql = `
@@ -98,11 +102,39 @@ export async function listarMiembrosActivos(): Promise<Pick<Miembro, 'nombre_com
 }
 
 /**
- * Consulta adicional para listar todos los miembros
+ * Consulta 13 (SELECT 2 con 1 JOIN):
+ * Obtener los miembros activos y el nombre del hogar al que pertenecen.
  */
-export async function listarTodosLosMiembros(): Promise<Miembro[]> {
+export async function listarMiembrosConHogar(): Promise<MiembroConHogar[]> {
   const sql = `
-    SELECT id_miembro, nombre_completo, correo, telefono, estado_activo
+    SELECT H.nombre_hogar, M.nombre_completo
+    FROM MIEMBRO M
+    JOIN HOGAR H ON M.id_hogar = H.id_hogar
+    WHERE M.estado_activo = TRUE
+    ORDER BY H.nombre_hogar ASC, M.nombre_completo ASC;
+  `;
+
+  const result = await query<MiembroConHogar>(sql);
+  return result.rows;
+}
+
+/**
+ * Listar miembros (opcionalmente filtrados por id_hogar)
+ */
+export async function listarTodosLosMiembros(id_hogar?: number): Promise<Miembro[]> {
+  if (id_hogar) {
+    const sql = `
+      SELECT id_miembro, id_hogar, nombre_completo, correo, telefono, estado_activo
+      FROM MIEMBRO
+      WHERE id_hogar = $1
+      ORDER BY id_miembro ASC;
+    `;
+    const result = await query<Miembro>(sql, [id_hogar]);
+    return result.rows;
+  }
+
+  const sql = `
+    SELECT id_miembro, id_hogar, nombre_completo, correo, telefono, estado_activo
     FROM MIEMBRO
     ORDER BY id_miembro ASC;
   `;
@@ -111,11 +143,11 @@ export async function listarTodosLosMiembros(): Promise<Miembro[]> {
 }
 
 /**
- * Consulta adicional para obtener un miembro por su ID
+ * Obtener miembro por ID
  */
 export async function obtenerMiembroPorId(id_miembro: number): Promise<Miembro | null> {
   const sql = `
-    SELECT id_miembro, nombre_completo, correo, telefono, estado_activo
+    SELECT id_miembro, id_hogar, nombre_completo, correo, telefono, estado_activo
     FROM MIEMBRO
     WHERE id_miembro = $1;
   `;

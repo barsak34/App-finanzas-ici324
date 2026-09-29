@@ -1,5 +1,12 @@
+export interface Hogar {
+  id_hogar: number;
+  nombre_hogar: string;
+  fecha_creacion?: Date | string;
+}
+
 export interface Miembro {
   id_miembro: number;
+  id_hogar?: number | null;
   nombre_completo: string;
   correo: string;
   telefono?: string | null;
@@ -25,7 +32,18 @@ export interface Transaccion {
   fecha_registro: Date | string;
 }
 
-// Interfaces para consultas complejas con JOIN
+// Interfaces para consultas con JOIN (Reportes del Informe)
+export interface MiembroConHogar {
+  nombre_hogar: string;
+  nombre_completo: string;
+}
+
+export interface TransaccionConHogar {
+  nombre_hogar: string;
+  nombre_completo: string;
+  monto: number;
+}
+
 export interface TransaccionConMiembro {
   nombre_completo: string;
   monto: number;

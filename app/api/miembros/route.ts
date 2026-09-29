@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { insertarMiembro, listarMiembrosActivos, listarTodosLosMiembros } from '@/servicios/miembros';
-import { isValidEmail, sanitizeString, ofuscarCorreo, hashearContrasena } from '@/lib/seguridad';
+import { isValidEmail, sanitizeString, ofuscarCorreo, hashearContrasena, isValidId } from '@/lib/seguridad';
 
 export const dynamic = 'force-dynamic';
 
@@ -8,10 +8,11 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const soloActivos = searchParams.get('solo_activos') === 'true';
+    const idHogarParam = searchParams.get('id_hogar');
+    const idHogar = idHogarParam && isValidId(idHogarParam) ? parseInt(idHogarParam, 10) : undefined;
 
     if (soloActivos) {
       const miembrosActivos = await listarMiembrosActivos();
-      // Ofuscacion de datos (Data Masking) para proteger informacion sensible
       const dataOfuscada = miembrosActivos.map((m) => ({
         nombre_completo: m.nombre_completo,
         correo: m.correo,
@@ -25,7 +26,7 @@ export async function GET(request: NextRequest) {
       }, { status: 200 });
     }
 
-    const todos = await listarTodosLosMiembros();
+    const todos = await listarTodosLosMiembros(idHogar);
     const dataOfuscada = todos.map((m) => ({
       ...m,
       correo_ofuscado: ofuscarCorreo(m.correo),
@@ -33,6 +34,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
+      filtro_hogar: idHogar || 'todos',
       total: dataOfuscada.length,
       data: dataOfuscada,
     }, { status: 200 });
@@ -48,7 +50,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { nombre_completo, correo, telefono, contrasena, estado_activo } = body;
+    const { nombre_completo, correo, telefono, contrasena, id_hogar, estado_activo } = body;
 
     const nombreLimpio = sanitizeString(nombre_completo);
     const correoLimpio = sanitizeString(correo).toLowerCase();
@@ -68,6 +70,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validar id_hogar si se envía
+    let hogarIdNum: number | null = null;
+    if (id_hogar !== undefined && id_hogar !== null) {
+      if (!isValidId(id_hogar)) {
+        return NextResponse.json(
+          { success: false, error: 'id_hogar debe ser un numero entero positivo' },
+          { status: 400 }
+        );
+      }
+      hogarIdNum = parseInt(id_hogar, 10);
+    }
+
     // Hash de contraseña seguro usando bcrypt
     let contrasenaHash: string | null = null;
     if (contrasena && typeof contrasena === 'string' && contrasena.length >= 6) {
@@ -79,6 +93,7 @@ export async function POST(request: NextRequest) {
       correo: correoLimpio,
       telefono: telefonoLimpio,
       contrasena: contrasenaHash,
+      id_hogar: hogarIdNum,
       estado_activo,
     });
 
@@ -96,6 +111,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { success: false, error: 'Ya existe un miembro registrado con ese correo electronico' },
         { status: 409 }
+      );
+    }
+    if (error.code === '23503') {
+      return NextResponse.json(
+        { success: false, error: 'El hogar especificado no existe (violacion de llave foranea)' },
+        { status: 400 }
       );
     }
     return NextResponse.json(

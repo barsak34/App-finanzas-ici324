@@ -1,5 +1,5 @@
 import { query } from '@/lib/db';
-import { Transaccion, TransaccionConMiembro, TransaccionDetallada } from '@/tipos';
+import { Transaccion, TransaccionConMiembro, TransaccionDetallada, TransaccionConHogar } from '@/tipos';
 
 /**
  * Consulta 3 (INSERT):
@@ -145,4 +145,21 @@ export async function obtenerTransaccionPorId(id_transaccion: number): Promise<T
   `;
   const result = await query<Transaccion>(sql, [id_transaccion]);
   return result.rows[0] || null;
+}
+
+/**
+ * Consulta 14 (SELECT con 2 JOINs del Informe):
+ * Obtener las transacciones mayores a un monto, mostrando quién lo gastó y en qué hogar.
+ */
+export async function listarTransaccionesPorHogar(montoMinimo: number): Promise<TransaccionConHogar[]> {
+  const sql = `
+    SELECT H.nombre_hogar, M.nombre_completo, T.monto
+    FROM TRANSACCION T
+    JOIN MIEMBRO M ON T.id_miembro = M.id_miembro
+    JOIN HOGAR H ON M.id_hogar = H.id_hogar
+    WHERE T.monto > $1
+    ORDER BY T.monto DESC;
+  `;
+  const result = await query<TransaccionConHogar>(sql, [montoMinimo]);
+  return result.rows;
 }
