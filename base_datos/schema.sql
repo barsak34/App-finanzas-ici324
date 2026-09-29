@@ -1,17 +1,26 @@
 -- =======================================================================
 -- PROYECTO UNIVERSITARIO: App de Finanzas del Hogar
 -- MOTOR: PostgreSQL (Supabase SQL Editor Compatible)
--- DESCRIPCIÓN: Script DDL para creación de tablas, llaves e integridad referencial
+-- DESCRIPCIÓN: Script DDL para creación de 4 tablas, llaves e integridad referencial
 -- =======================================================================
 
--- 1. Limpieza de tablas previas (opcional si se reinicia la BD)
+-- 1. Limpieza de tablas previas (en orden por llaves foráneas)
 DROP TABLE IF EXISTS TRANSACCION CASCADE;
 DROP TABLE IF EXISTS CATEGORIA CASCADE;
 DROP TABLE IF EXISTS MIEMBRO CASCADE;
+DROP TABLE IF EXISTS HOGAR CASCADE;
 
--- 2. Creación de Tabla MIEMBRO
+-- 2. Creación de Tabla HOGAR
+CREATE TABLE HOGAR (
+    id_hogar SERIAL PRIMARY KEY,
+    nombre_hogar VARCHAR(100) NOT NULL,
+    fecha_creacion TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 3. Creación de Tabla MIEMBRO
 CREATE TABLE MIEMBRO (
     id_miembro SERIAL PRIMARY KEY,
+    id_hogar INT REFERENCES HOGAR(id_hogar) ON DELETE RESTRICT ON UPDATE CASCADE,
     nombre_completo VARCHAR(100) NOT NULL,
     correo VARCHAR(100) NOT NULL UNIQUE,
     telefono VARCHAR(20),
@@ -20,14 +29,14 @@ CREATE TABLE MIEMBRO (
     creado_en TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- 3. Creación de Tabla CATEGORIA
+-- 4. Creación de Tabla CATEGORIA
 CREATE TABLE CATEGORIA (
     id_categoria SERIAL PRIMARY KEY,
     nombre_categoria VARCHAR(50) NOT NULL UNIQUE,
     descripcion TEXT
 );
 
--- 4. Creación de Tabla TRANSACCION (Relación 1:N con MIEMBRO y CATEGORIA)
+-- 5. Creación de Tabla TRANSACCION (Relación con MIEMBRO y CATEGORIA)
 CREATE TABLE TRANSACCION (
     id_transaccion SERIAL PRIMARY KEY,
     id_miembro INT NOT NULL,
@@ -38,7 +47,6 @@ CREATE TABLE TRANSACCION (
     descripcion_gasto TEXT,
     fecha_registro TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
 
-    -- Integridad Referencial (Llaves Foráneas)
     CONSTRAINT fk_transaccion_miembro 
         FOREIGN KEY (id_miembro) 
         REFERENCES MIEMBRO (id_miembro) 
@@ -52,33 +60,38 @@ CREATE TABLE TRANSACCION (
         ON UPDATE CASCADE
 );
 
--- 5. Creación de Índices para optimizar las consultas con JOIN y filtros frecuentes
+-- 6. Creación de Índices para optimizar JOINs y filtros
+CREATE INDEX idx_miembro_hogar ON MIEMBRO(id_hogar);
 CREATE INDEX idx_transaccion_miembro ON TRANSACCION(id_miembro);
 CREATE INDEX idx_transaccion_categoria ON TRANSACCION(id_categoria);
 CREATE INDEX idx_transaccion_tipo ON TRANSACCION(tipo_movimiento);
 CREATE INDEX idx_miembro_activo ON MIEMBRO(estado_activo);
 
 -- =======================================================================
--- DATOS SEMILLA (SEED DATA) PARA PRUEBAS INICIALES
+-- DATOS SEMILLA (SEED DATA)
 -- =======================================================================
 
--- Miembros de prueba
-INSERT INTO MIEMBRO (nombre_completo, correo, telefono, contrasena, estado_activo) VALUES
-('Juan Pérez', 'juan.perez@example.com', '+56911112222', '$2a$10$w8c5sU5Jq0iK3hX9xYz.E.Zq7T8X8hW9K4vL3M2N1O0P1Q2R3S4T', TRUE),
-('María González', 'maria.gonzalez@example.com', '+56933334444', '$2a$10$w8c5sU5Jq0iK3hX9xYz.E.Zq7T8X8hW9K4vL3M2N1O0P1Q2R3S4T', TRUE),
-('Carlos Tapia', 'carlos.tapia@example.com', '+56955556666', '$2a$10$w8c5sU5Jq0iK3hX9xYz.E.Zq7T8X8hW9K4vL3M2N1O0P1Q2R3S4T', FALSE);
+-- Hogares
+INSERT INTO HOGAR (nombre_hogar) VALUES
+('Departamento Mirador Valpo'),
+('Casa Viña del Mar');
 
--- Categorías de prueba
+-- Miembros asociados a Hogares
+INSERT INTO MIEMBRO (id_hogar, nombre_completo, correo, telefono, contrasena, estado_activo) VALUES
+(1, 'Maximiliano Felipe Rozas Rifo', 'maximixasz@gmail.com', '+56912345678', '$2a$10$w8c5sU5Jq0iK3hX9xYz.E.Zq7T8X8hW9K4vL3M2N1O0P1Q2R3S4T', TRUE),
+(1, 'Gladys Carvacho', 'gladys.carvacho@example.com', '+56987654321', '$2a$10$w8c5sU5Jq0iK3hX9xYz.E.Zq7T8X8hW9K4vL3M2N1O0P1Q2R3S4T', TRUE),
+(2, 'Carlos Tapia', 'carlos.tapia@example.com', '+56955556666', '$2a$10$w8c5sU5Jq0iK3hX9xYz.E.Zq7T8X8hW9K4vL3M2N1O0P1Q2R3S4T', FALSE);
+
+-- Categorías
 INSERT INTO CATEGORIA (nombre_categoria, descripcion) VALUES
-('Alimentación', 'Compras de supermercado y alimentos'),
+('Supermercado', 'Compras de despensa y articulos para el hogar'),
 ('Servicios Básicos', 'Luz, agua, gas e internet'),
 ('Salud', 'Farmacias y consultas médicas'),
 ('Sueldo / Salario', 'Ingresos mensuales de trabajo');
 
--- Transacciones de prueba
+-- Transacciones
 INSERT INTO TRANSACCION (id_miembro, id_categoria, tipo_movimiento, monto, medio_pago, descripcion_gasto, fecha_registro) VALUES
-(1, 4, 'Ingreso', 850000.00, 'Transferencia Bancaria', 'Sueldo mensual Juan', CURRENT_TIMESTAMP - INTERVAL '5 days'),
-(1, 1, 'Egreso', 45000.50, 'Tarjeta de Débito', 'Supermercado semanal', CURRENT_TIMESTAMP - INTERVAL '3 days'),
-(2, 2, 'Egreso', 32000.00, 'Transferencia Bancaria', 'Pago cuenta de agua y luz', CURRENT_TIMESTAMP - INTERVAL '2 days'),
-(2, 1, 'Egreso', 15000.00, 'Efectivo', 'Compra de panadería y verduras', CURRENT_TIMESTAMP - INTERVAL '1 day'),
+(1, 4, 'Ingreso', 850000.00, 'Transferencia Bancaria', 'Sueldo mensual', CURRENT_TIMESTAMP - INTERVAL '5 days'),
+(1, 1, 'Egreso', 45000.00, 'Debito', 'Compra mensual supermercado', CURRENT_TIMESTAMP - INTERVAL '3 days'),
+(2, 2, 'Egreso', 32000.00, 'Transferencia Bancaria', 'Pago de servicios', CURRENT_TIMESTAMP - INTERVAL '2 days'),
 (1, 3, 'Egreso', 28500.00, 'Tarjeta de Crédito', 'Medicamentos recetados', CURRENT_TIMESTAMP);
