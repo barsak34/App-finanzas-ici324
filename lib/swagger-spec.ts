@@ -7,7 +7,7 @@ export const swaggerSpec = {
   },
   servers: [
     {
-      url: 'http://localhost:3000',
+      url: 'app-finanzas-ici324.vercel.app',
       description: 'Servidor local',
     },
   ],
