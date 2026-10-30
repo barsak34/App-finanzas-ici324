@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
+import './globals.css';
+import Navegacion from '@/componentes/Navegacion';
 
 export const metadata: Metadata = {
-  title: 'App de Finanzas del Hogar - Backend API',
-  description: 'Backend con Next.js, PostgreSQL y Swagger para ICI324 Bases de Datos y Programación Web',
+  title: 'Finanzas del Hogar - Control 2 MongoDB',
+  description: 'Aplicación de finanzas del hogar con MongoDB, Next.js y TypeScript (Grupo 23)',
 };
 
 export default function RootLayout({
@@ -12,8 +14,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es">
-      <body style={{ margin: 0, padding: 0, background: '#f8fafc' }}>
-        {children}
+      <body>
+        <Navegacion>{children}</Navegacion>
       </body>
     </html>
   );
