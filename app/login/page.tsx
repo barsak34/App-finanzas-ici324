@@ -101,17 +101,17 @@ export default function LoginPage() {
           <div className="grid grid-cols-2 gap-2">
             <button
               type="button"
-              onClick={() => llenarCredencial('maximiliano@ejemplo.com')}
+              onClick={() => llenarCredencial('juan@ejemplo.com')}
               className="text-xs bg-gray-50 hover:bg-gray-100 text-gray-700 py-1.5 px-2 rounded border border-gray-200 transition"
             >
-              Maximiliano
+              Juan Jiménez
             </button>
             <button
               type="button"
-              onClick={() => llenarCredencial('gladys@ejemplo.com')}
+              onClick={() => llenarCredencial('maria@ejemplo.com')}
               className="text-xs bg-gray-50 hover:bg-gray-100 text-gray-700 py-1.5 px-2 rounded border border-gray-200 transition"
             >
-              Gladys
+              María Lazcano
             </button>
           </div>
         </div>

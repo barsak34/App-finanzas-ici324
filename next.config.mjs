@@ -2,6 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false, // Oculta el header 'X-Powered-By: Next.js' para no exponer la tecnologia del servidor
+  experimental: {
+    serverComponentsExternalPackages: ['mongodb', 'pg', 'bcryptjs'],
+  },
 
   async headers() {
     return [

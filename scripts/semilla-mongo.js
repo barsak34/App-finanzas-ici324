@@ -42,38 +42,38 @@ async function inicializarBaseDatos() {
     console.log('🧹 Colecciones limpiadas con éxito.');
 
     // Hashear contraseñas para los miembros
-    const hashMaxi = await bcrypt.hash('123456', 10);
-    const hashGladys = await bcrypt.hash('123456', 10);
+    const hashJuan = await bcrypt.hash('123456', 10);
+    const hashMaria = await bcrypt.hash('123456', 10);
 
     const hogarId = new ObjectId('66f000000000000000000001');
 
     // 2. Insertar Hogar con Miembros embebidos (según sección 3.1 del informe)
     const hogar = {
       _id: hogarId,
-      nombre_hogar: 'Departamento Mirador Valpo',
+      nombre_hogar: 'Departamento',
       fecha_creacion: new Date('2026-09-29T00:00:00Z'),
       miembros: [
         {
           id_miembro: 'M001',
-          nombre_completo: 'Maximiliano Rozas',
-          correo: 'maximiliano@ejemplo.com',
-          contrasena: hashMaxi,
+          nombre_completo: 'Juan Jiménez',
+          correo: 'juan@ejemplo.com',
+          contrasena: hashJuan,
           telefono: '+56912345678',
           estado_activo: true
         },
         {
           id_miembro: 'M002',
-          nombre_completo: 'Gladys Carvacho',
-          correo: 'gladys@ejemplo.com',
-          contrasena: hashGladys,
+          nombre_completo: 'María Lazcano',
+          correo: 'maria@ejemplo.com',
+          contrasena: hashMaria,
           telefono: '+56987654321',
           estado_activo: true
         },
         {
           id_miembro: 'M003',
-          nombre_completo: 'Camila Soto',
-          correo: 'camila@ejemplo.com',
-          contrasena: hashGladys,
+          nombre_completo: 'Pedro Morales',
+          correo: 'pedro@ejemplo.com',
+          contrasena: hashMaria,
           estado_activo: false
         }
       ]
@@ -124,7 +124,7 @@ async function inicializarBaseDatos() {
         tipo_movimiento: 'Ingreso',
         monto: 780000,
         medio_pago: 'Transferencia',
-        descripcion_gasto: 'Sueldo mensual Gladys',
+        descripcion_gasto: 'Remuneración mensual',
         fecha_registro: new Date('2026-08-05T09:00:00Z')
       },
       {
@@ -135,7 +135,7 @@ async function inicializarBaseDatos() {
         tipo_movimiento: 'Egreso',
         monto: 32900,
         medio_pago: 'Débito',
-        descripcion_gasto: 'Cuenta de luz Enel',
+        descripcion_gasto: 'Cuenta de electricidad',
         fecha_registro: new Date('2026-08-12T11:20:00Z')
       },
       {
@@ -146,7 +146,7 @@ async function inicializarBaseDatos() {
         tipo_movimiento: 'Egreso',
         monto: 18600,
         medio_pago: 'Efectivo',
-        descripcion_gasto: 'Alimento gato',
+        descripcion_gasto: 'Alimento de mascota',
         fecha_registro: new Date('2026-08-15T18:00:00Z')
       },
       {
@@ -157,7 +157,7 @@ async function inicializarBaseDatos() {
         tipo_movimiento: 'Egreso',
         monto: 390000,
         medio_pago: 'Transferencia',
-        descripcion_gasto: 'Arriendo mensual agosto',
+        descripcion_gasto: 'Pago arriendo mensual',
         fecha_registro: new Date('2026-08-01T10:00:00Z')
       },
       {
@@ -168,7 +168,7 @@ async function inicializarBaseDatos() {
         tipo_movimiento: 'Ingreso',
         monto: 40000,
         medio_pago: 'Efectivo',
-        descripcion_gasto: 'Venta artículo usado',
+        descripcion_gasto: 'Ingreso adicional',
         fecha_registro: new Date('2026-08-20T14:15:00Z')
       }
     ];

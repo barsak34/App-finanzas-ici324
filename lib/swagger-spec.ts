@@ -41,7 +41,7 @@ export const swaggerSpec = {
                 type: 'object',
                 required: ['nombre_hogar'],
                 properties: {
-                  nombre_hogar: { type: 'string', example: 'Departamento Mirador Valpo' },
+                  nombre_hogar: { type: 'string', example: 'Departamento' },
                 },
               },
             },

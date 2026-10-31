@@ -78,44 +78,46 @@ export default function Navegacion({ children }: Props) {
       </main>
 
       {/* BOTTOM NAVIGATION PARA MÓVIL (Fig. 3, 7, 9 del informe) */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-2 px-6 flex justify-around items-center z-50 shadow-lg">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 h-16 px-4 grid grid-cols-4 items-center z-50 shadow-md">
         <Link
           href="/"
-          className={`flex flex-col items-center text-xs font-medium ${
-            pathname === '/' ? 'text-[#1F5C4D]' : 'text-gray-400'
+          className={`flex flex-col items-center justify-center text-xs font-medium ${
+            pathname === '/' ? 'text-[#1F5C4D]' : 'text-gray-400 hover:text-gray-600'
           }`}
         >
-          <History className="w-6 h-6" />
-          <span>Historial</span>
+          <History className="w-5 h-5 mb-0.5" />
+          <span className="text-[11px]">Historial</span>
         </Link>
 
-        {/* Botón flotante central "+" para Nueva Transacción */}
-        <Link
-          href="/transacciones/nueva"
-          className="bg-[#1F5C4D] text-white p-3 rounded-full shadow-md hover:bg-[#18473c] transition-transform active:scale-95 -mt-5"
-          title="Nueva transacción"
-        >
-          <Plus className="w-6 h-6" />
-        </Link>
+        {/* Botón "+" para Nueva Transacción centrado en la barra */}
+        <div className="flex items-center justify-center">
+          <Link
+            href="/transacciones/nueva"
+            className="w-10 h-10 bg-[#1F5C4D] text-white rounded-full flex items-center justify-center shadow-sm hover:bg-[#18473c] transition-transform active:scale-90"
+            title="Nueva transacción"
+          >
+            <Plus className="w-5 h-5" />
+          </Link>
+        </div>
 
         <Link
           href="/categorias"
-          className={`flex flex-col items-center text-xs font-medium ${
-            pathname === '/categorias' ? 'text-[#1F5C4D]' : 'text-gray-400'
+          className={`flex flex-col items-center justify-center text-xs font-medium ${
+            pathname === '/categorias' ? 'text-[#1F5C4D]' : 'text-gray-400 hover:text-gray-600'
           }`}
         >
-          <Tag className="w-6 h-6" />
-          <span>Categorías</span>
+          <Tag className="w-5 h-5 mb-0.5" />
+          <span className="text-[11px]">Categorías</span>
         </Link>
 
         <Link
           href="/miembros"
-          className={`flex flex-col items-center text-xs font-medium ${
-            pathname === '/miembros' ? 'text-[#1F5C4D]' : 'text-gray-400'
+          className={`flex flex-col items-center justify-center text-xs font-medium ${
+            pathname === '/miembros' ? 'text-[#1F5C4D]' : 'text-gray-400 hover:text-gray-600'
           }`}
         >
-          <User className="w-6 h-6" />
-          <span>Perfil</span>
+          <User className="w-5 h-5 mb-0.5" />
+          <span className="text-[11px]">Perfil</span>
         </Link>
       </nav>
     </div>

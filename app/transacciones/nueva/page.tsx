@@ -51,12 +51,25 @@ export default function NuevaTransaccionPage() {
       });
   }, [router]);
 
+  const formatearMontoInput = (valor: string) => {
+    const soloNumeros = valor.replace(/\D/g, '');
+    if (!soloNumeros) return '';
+    return soloNumeros.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  };
+
+  const handleMontoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formateado = formatearMontoInput(e.target.value);
+    setMonto(formateado);
+    const num = Number(formateado.replace(/\./g, ''));
+    if (num > 0) setErrorMonto(null);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     let hayError = false;
 
     // Validación 1: Monto > 0 (Figura 5)
-    const montoNum = Number(monto);
+    const montoNum = Number(monto.replace(/\./g, ''));
     if (!monto || isNaN(montoNum) || montoNum <= 0) {
       setErrorMonto('Ingresa un monto mayor a 0');
       hayError = true;
@@ -158,14 +171,12 @@ export default function NuevaTransaccionPage() {
           <div className="flex items-center justify-center">
             <span className="font-monto text-3xl font-bold text-gray-900 mr-1">$</span>
             <input
-              type="number"
+              type="text"
+              inputMode="numeric"
               value={monto}
-              onChange={(e) => {
-                setMonto(e.target.value);
-                if (Number(e.target.value) > 0) setErrorMonto(null);
-              }}
+              onChange={handleMontoChange}
               placeholder="0"
-              className="font-monto text-3xl md:text-4xl font-bold text-gray-900 w-44 text-center focus:outline-none bg-transparent"
+              className="font-monto text-3xl md:text-4xl font-bold text-gray-900 w-52 text-center focus:outline-none bg-transparent"
               autoFocus
             />
           </div>

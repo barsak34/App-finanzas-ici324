@@ -145,7 +145,7 @@ export default function MiembrosPerfilPage() {
               {usuario?.nombre_completo || 'Usuario'}
             </h2>
             <p className="text-xs text-gray-500 mt-0.5">
-              {nombreHogar || usuario?.nombre_hogar || 'Hogar'}
+              {nombreHogar || usuario?.nombre_hogar || 'Departamento'}
             </p>
           </div>
         </div>

@@ -1,7 +1,12 @@
-import { MongoClient, Db } from 'mongodb';
+import { MongoClient, Db, MongoClientOptions } from 'mongodb';
 
 const uri = process.env.MONGODB_URI || '';
-const options = {};
+const options: MongoClientOptions = {
+  tls: true,
+  family: 4, // Forzar IPv4 para evitar incompatibilidad de handshake TLS en redes domésticas (SSL alert 80)
+  serverSelectionTimeoutMS: 10000,
+  connectTimeoutMS: 10000,
+};
 
 let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
