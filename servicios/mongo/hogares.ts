@@ -39,6 +39,63 @@ export async function autenticarMiembro(correo: string, contrasenaPlana: string)
 }
 
 /**
+ * Lista todos los hogares registrados en MongoDB
+ */
+export async function listarHogares() {
+  const db = await getDatabase();
+  const lista = await db.collection('hogares').find({}).toArray();
+  return lista.map((h: any) => ({
+    id_hogar: h._id.toString(),
+    nombre_hogar: h.nombre_hogar,
+    fecha_creacion: h.fecha_creacion,
+    cantidad_miembros: (h.miembros || []).length
+  }));
+}
+
+/**
+ * Crea un nuevo hogar en MongoDB con un miembro administrador opcional
+ */
+export async function crearHogar(datos: {
+  nombre_hogar: string;
+  miembro_inicial?: {
+    nombre_completo: string;
+    correo: string;
+    contrasena: string;
+    telefono?: string;
+  };
+}) {
+  const db = await getDatabase();
+  let miembros: any[] = [];
+
+  if (datos.miembro_inicial) {
+    const hash = await bcrypt.hash(datos.miembro_inicial.contrasena || '123456', 10);
+    miembros.push({
+      id_miembro: 'M001',
+      nombre_completo: datos.miembro_inicial.nombre_completo,
+      correo: datos.miembro_inicial.correo.toLowerCase().trim(),
+      contrasena: hash,
+      telefono: datos.miembro_inicial.telefono || null,
+      estado_activo: true
+    });
+  }
+
+  const nuevoHogar = {
+    nombre_hogar: datos.nombre_hogar.trim(),
+    fecha_creacion: new Date(),
+    miembros
+  };
+
+  const res = await db.collection('hogares').insertOne(nuevoHogar);
+
+  return {
+    id_hogar: res.insertedId.toString(),
+    nombre_hogar: nuevoHogar.nombre_hogar,
+    fecha_creacion: nuevoHogar.fecha_creacion,
+    miembros
+  };
+}
+
+/**
  * Obtiene el hogar con sus miembros
  */
 export async function obtenerHogar(idHogar: string) {

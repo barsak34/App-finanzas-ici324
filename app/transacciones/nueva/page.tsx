@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { Calendar } from 'lucide-react';
 
 export default function NuevaTransaccionPage() {
   const router = useRouter();
@@ -14,6 +15,7 @@ export default function NuevaTransaccionPage() {
   const [medioPago, setMedioPago] = useState<string>('Débito');
   const [descripcion, setDescripcion] = useState<string>('');
   const [idMiembro, setIdMiembro] = useState<string>('');
+  const [fechaRegistro, setFechaRegistro] = useState<string>(new Date().toISOString().split('T')[0]);
 
   const [categorias, setCategorias] = useState<any[]>([]);
   const [miembros, setMiembros] = useState<any[]>([]);
@@ -99,7 +101,8 @@ export default function NuevaTransaccionPage() {
           tipo_movimiento: tipoMovimiento,
           monto: montoNum,
           medio_pago: medioPago,
-          descripcion_gasto: descripcion
+          descripcion_gasto: descripcion,
+          fecha_registro: fechaRegistro
         })
       });
 
@@ -263,6 +266,21 @@ export default function NuevaTransaccionPage() {
               </option>
             ))}
           </select>
+        </div>
+
+        {/* FECHA DEL MOVIMIENTO CON CALENDARIO DESPLEGABLE */}
+        <div>
+          <label className="block text-xs font-medium text-gray-500 mb-1">Fecha del movimiento</label>
+          <div className="relative">
+            <input
+              type="date"
+              value={fechaRegistro}
+              onChange={(e) => setFechaRegistro(e.target.value)}
+              onClick={(e) => e.currentTarget.showPicker?.()}
+              className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-xs cursor-pointer focus:outline-none focus:border-[#1F5C4D] bg-[#FAFAFA]"
+            />
+            <Calendar className="w-4 h-4 text-gray-400 absolute right-3 top-3 pointer-events-none" />
+          </div>
         </div>
 
         {/* DESCRIPCIÓN OPCIONAL */}
