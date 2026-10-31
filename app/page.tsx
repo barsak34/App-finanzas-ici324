@@ -419,7 +419,7 @@ function HistorialContenido() {
       {modalHogarAbierto && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
           <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-5 shadow-xl border border-gray-100">
-            <div className="flex items-center justify-between gap-3 pb-3 border-b border-gray-200">
+            <div className="grid grid-cols-[auto_1fr_auto] items-center pb-3 border-b border-gray-200">
               <button
                 type="button"
                 onClick={() => setModalHogarAbierto(false)}
@@ -428,9 +428,10 @@ function HistorialContenido() {
                 <span>✕</span>
                 <span>Cerrar</span>
               </button>
-              <h3 className="text-lg md:text-xl font-serif font-bold text-[#12241F] tracking-tight whitespace-nowrap text-right">
+              <h3 className="text-base sm:text-lg font-serif font-bold text-[#12241F] tracking-tight text-center px-2">
                 Hogares
               </h3>
+              <div className="w-[80px]"></div>
             </div>
 
             {/* LISTA DE HOGARES DISPONIBLES */}

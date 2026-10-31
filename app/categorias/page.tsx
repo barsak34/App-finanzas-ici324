@@ -238,19 +238,20 @@ export default function CategoriasPage() {
       {modalAbierto && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
           <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-5 shadow-xl border border-gray-100">
-            {/* Cabecera modal resaltada y en una sola linea */}
-            <div className="flex items-center justify-between gap-3 pb-4 border-b border-gray-200">
+            {/* Cabecera modal centrada armoniosamente */}
+            <div className="grid grid-cols-[auto_1fr_auto] items-center pb-4 border-b border-gray-200">
               <button
                 type="button"
                 onClick={cerrarModal}
-                className="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold transition active:scale-95 shadow-xs"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold transition active:scale-95 shadow-xs"
               >
                 <span className="text-gray-500 font-bold">✕</span>
                 <span>Cancelar</span>
               </button>
-              <h3 className="text-base sm:text-lg md:text-xl font-serif font-bold text-[#12241F] tracking-tight whitespace-nowrap text-right">
+              <h3 className="text-base sm:text-lg font-serif font-bold text-[#12241F] tracking-tight text-center px-2">
                 {modoEdicion ? 'Editar categoría' : 'Nueva categoría'}
               </h3>
+              <div className="w-[88px]"></div>
             </div>
 
             <form onSubmit={handleGuardar} className="space-y-4">
