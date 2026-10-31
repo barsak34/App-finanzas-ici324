@@ -88,39 +88,45 @@ export default function Navegacion({ children }: Props) {
         </Link>
       </div>
 
-      {/* BOTTOM NAVIGATION PARA MÓVIL (3 columnas limpias y equilibradas) */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 h-16 px-6 grid grid-cols-3 items-center z-40 shadow-lg">
+      {/* BOTTOM NAVIGATION PARA MÓVIL (3 columnas con pastilla activa refinada) */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-gray-200/80 h-16 px-4 grid grid-cols-3 items-center z-40 shadow-[0_-4px_20px_rgba(0,0,0,0.04)]">
         {/* 1. Historial */}
         <Link
           href="/"
-          className={`flex flex-col items-center justify-center text-xs font-medium ${
-            pathname === '/' ? 'text-[#1F5C4D]' : 'text-gray-400 hover:text-gray-600'
+          className={`flex flex-col items-center justify-center py-1 rounded-xl transition-all duration-200 ${
+            pathname === '/'
+              ? 'text-[#1F5C4D] font-bold bg-[#E8F2EF]/60 scale-102'
+              : 'text-gray-400 hover:text-gray-600 font-medium'
           }`}
         >
-          <History className="w-5 h-5 mb-0.5" />
-          <span className="text-[11px]">Historial</span>
+          <History className={`w-5 h-5 mb-0.5 ${pathname === '/' ? 'stroke-[2.5]' : 'stroke-[1.8]'}`} />
+          <span className="text-[11px] tracking-tight">Historial</span>
         </Link>
 
         {/* 2. Categorías (en el centro) */}
         <Link
           href="/categorias"
-          className={`flex flex-col items-center justify-center text-xs font-medium ${
-            pathname === '/categorias' ? 'text-[#1F5C4D]' : 'text-gray-400 hover:text-gray-600'
+          className={`flex flex-col items-center justify-center py-1 rounded-xl transition-all duration-200 ${
+            pathname === '/categorias'
+              ? 'text-[#1F5C4D] font-bold bg-[#E8F2EF]/60 scale-102'
+              : 'text-gray-400 hover:text-gray-600 font-medium'
           }`}
         >
-          <Tag className="w-5 h-5 mb-0.5" />
-          <span className="text-[11px]">Categorías</span>
+          <Tag className={`w-5 h-5 mb-0.5 ${pathname === '/categorias' ? 'stroke-[2.5]' : 'stroke-[1.8]'}`} />
+          <span className="text-[11px] tracking-tight">Categorías</span>
         </Link>
 
         {/* 3. Perfil */}
         <Link
           href="/miembros"
-          className={`flex flex-col items-center justify-center text-xs font-medium ${
-            pathname === '/miembros' ? 'text-[#1F5C4D]' : 'text-gray-400 hover:text-gray-600'
+          className={`flex flex-col items-center justify-center py-1 rounded-xl transition-all duration-200 ${
+            pathname === '/miembros'
+              ? 'text-[#1F5C4D] font-bold bg-[#E8F2EF]/60 scale-102'
+              : 'text-gray-400 hover:text-gray-600 font-medium'
           }`}
         >
-          <User className="w-5 h-5 mb-0.5" />
-          <span className="text-[11px]">Perfil</span>
+          <User className={`w-5 h-5 mb-0.5 ${pathname === '/miembros' ? 'stroke-[2.5]' : 'stroke-[1.8]'}`} />
+          <span className="text-[11px] tracking-tight">Perfil</span>
         </Link>
       </nav>
     </div>

@@ -1,7 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Plus } from 'lucide-react';
+import { 
+  Plus, ShoppingCart, Zap, Car, UtensilsCrossed, HeartPulse, Briefcase, GraduationCap, Tag as TagIcon
+} from 'lucide-react';
 
 interface Categoria {
   id_categoria: string;
@@ -60,6 +62,32 @@ export default function CategoriasPage() {
   const cerrarModal = () => {
     setModalAbierto(false);
     setErrorEliminar(null);
+  };
+
+  const getCategoriaConfig = (nombre: string) => {
+    const n = (nombre || '').toLowerCase();
+    if (n.includes('ingres') || n.includes('sueldo') || n.includes('remun')) {
+      return { icon: Briefcase, bg: 'bg-emerald-50 text-emerald-900 border-emerald-200' };
+    }
+    if (n.includes('super') || n.includes('despensa') || n.includes('alim')) {
+      return { icon: ShoppingCart, bg: 'bg-emerald-50 text-emerald-900 border-emerald-200' };
+    }
+    if (n.includes('serv') || n.includes('luz') || n.includes('agua') || n.includes('gas') || n.includes('basic')) {
+      return { icon: Zap, bg: 'bg-amber-50 text-amber-900 border-amber-200' };
+    }
+    if (n.includes('trans') || n.includes('bencina') || n.includes('auto') || n.includes('micro')) {
+      return { icon: Car, bg: 'bg-blue-50 text-blue-900 border-blue-200' };
+    }
+    if (n.includes('comida') || n.includes('restauran') || n.includes('salida') || n.includes('caf')) {
+      return { icon: UtensilsCrossed, bg: 'bg-orange-50 text-orange-900 border-orange-200' };
+    }
+    if (n.includes('salud') || n.includes('farm') || n.includes('medic') || n.includes('doctor')) {
+      return { icon: HeartPulse, bg: 'bg-rose-50 text-rose-900 border-rose-200' };
+    }
+    if (n.includes('educ') || n.includes('coleg') || n.includes('uni') || n.includes('curso')) {
+      return { icon: GraduationCap, bg: 'bg-indigo-50 text-indigo-900 border-indigo-200' };
+    }
+    return { icon: TagIcon, bg: 'bg-stone-100 text-stone-800 border-stone-200' };
   };
 
   const handleGuardar = async (e: React.FormEvent) => {
@@ -162,22 +190,27 @@ export default function CategoriasPage() {
         </div>
       ) : (
         <div className="space-y-2">
-          {categorias.map((cat) => (
-            <div
-              key={cat.id_categoria}
-              className="bg-white rounded-xl p-3.5 px-4 shadow-xs border border-gray-100 flex items-center justify-between gap-3 hover:border-gray-200 hover:shadow-sm transition-all interactive-card"
-            >
-              <div className="flex items-center gap-3 min-w-0 flex-1">
-                <div className="w-9 h-9 rounded-full bg-[#EEF0EA] text-[#12241F] font-bold text-sm flex items-center justify-center shrink-0">
-                  {cat.nombre_categoria.charAt(0).toUpperCase()}
+          {categorias.map((cat) => {
+            const config = getCategoriaConfig(cat.nombre_categoria);
+            const IconoCat = config.icon;
+            return (
+              <div
+                key={cat.id_categoria}
+                className="bg-white rounded-xl p-3.5 px-4 shadow-xs border border-gray-100 flex items-center justify-between gap-3 hover:border-gray-200 hover:shadow-sm transition-all interactive-card"
+              >
+                <div className="flex items-center gap-3 min-w-0 flex-1">
+                  <div
+                    className={`w-9 h-9 rounded-xl font-bold flex items-center justify-center shrink-0 border ${config.bg}`}
+                  >
+                    <IconoCat className="w-4 h-4 stroke-[2]" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h4 className="text-sm font-semibold text-gray-900 truncate">{cat.nombre_categoria}</h4>
+                    {cat.descripcion && (
+                      <p className="text-xs text-gray-400 mt-0.5 truncate">{cat.descripcion}</p>
+                    )}
+                  </div>
                 </div>
-                <div className="min-w-0 flex-1">
-                  <h4 className="text-sm font-semibold text-gray-900 truncate">{cat.nombre_categoria}</h4>
-                  {cat.descripcion && (
-                    <p className="text-xs text-gray-400 mt-0.5 truncate">{cat.descripcion}</p>
-                  )}
-                </div>
-              </div>
 
               <button
                 onClick={() => abrirEditar(cat)}
@@ -186,7 +219,8 @@ export default function CategoriasPage() {
                 Editar
               </button>
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
 

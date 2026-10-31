@@ -3,7 +3,11 @@
 import React, { useEffect, useState, useCallback, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Plus, CheckCircle, ArrowDownCircle, ArrowUpCircle, Calendar, Home, ChevronDown } from 'lucide-react';
+import { 
+  Plus, CheckCircle, ArrowDownCircle, ArrowUpCircle, Calendar, Home, ChevronDown,
+  ShoppingCart, Zap, Car, UtensilsCrossed, HeartPulse, Briefcase, GraduationCap,
+  Sparkles, Wallet, Tag as TagIcon, ArrowUpRight, ArrowDownRight, Layers
+} from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -154,8 +158,33 @@ function HistorialContenido() {
     }).format(num);
   };
 
-  const getInicial = (nombre: string) => {
-    return nombre ? nombre.charAt(0).toUpperCase() : 'T';
+  const getCategoriaConfig = (nombre: string, esIngreso: boolean) => {
+    if (esIngreso) {
+      return {
+        icon: Briefcase,
+        bg: 'bg-emerald-50 text-emerald-800 border-emerald-200'
+      };
+    }
+    const n = (nombre || '').toLowerCase();
+    if (n.includes('super') || n.includes('despensa') || n.includes('alim')) {
+      return { icon: ShoppingCart, bg: 'bg-emerald-50 text-emerald-900 border-emerald-200' };
+    }
+    if (n.includes('serv') || n.includes('luz') || n.includes('agua') || n.includes('gas') || n.includes('basic')) {
+      return { icon: Zap, bg: 'bg-amber-50 text-amber-900 border-amber-200' };
+    }
+    if (n.includes('trans') || n.includes('bencina') || n.includes('auto') || n.includes('micro')) {
+      return { icon: Car, bg: 'bg-blue-50 text-blue-900 border-blue-200' };
+    }
+    if (n.includes('comida') || n.includes('restauran') || n.includes('salida') || n.includes('caf')) {
+      return { icon: UtensilsCrossed, bg: 'bg-orange-50 text-orange-900 border-orange-200' };
+    }
+    if (n.includes('salud') || n.includes('farm') || n.includes('medic') || n.includes('doctor')) {
+      return { icon: HeartPulse, bg: 'bg-rose-50 text-rose-900 border-rose-200' };
+    }
+    if (n.includes('educ') || n.includes('coleg') || n.includes('uni') || n.includes('curso')) {
+      return { icon: GraduationCap, bg: 'bg-indigo-50 text-indigo-900 border-indigo-200' };
+    }
+    return { icon: TagIcon, bg: 'bg-stone-100 text-stone-800 border-stone-200' };
   };
 
   const formatearFecha = (fechaIso: string) => {
@@ -202,27 +231,63 @@ function HistorialContenido() {
         </Link>
       </div>
 
-      {/* TARJETAS DE BALANCE CON COLORES REMARCADOS */}
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-emerald-50/80 rounded-xl p-4 shadow-xs border border-emerald-200/80">
-          <div className="flex items-center gap-1.5 text-xs text-emerald-800 font-bold mb-1">
-            <ArrowUpCircle className="w-4 h-4 text-emerald-600" />
-            <span>Ingresos</span>
+      {/* TARJETA DE BALANCE PRINCIPAL ESTILO FINTECH */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-[#12241F] via-[#16332B] to-[#1F5C4D] rounded-2xl p-6 text-white shadow-md border border-emerald-950/40">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          {/* Lado izquierdo: Balance Neto */}
+          <div>
+            <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-emerald-300/80 font-semibold mb-1">
+              <Wallet className="w-4 h-4 text-emerald-300" />
+              <span>Balance neto disponible</span>
+            </div>
+            <p className="font-monto text-3xl md:text-4xl font-extrabold text-white tracking-tight">
+              {formatearMonto(balance.balanceNeto)}
+            </p>
           </div>
-          <p className="font-monto text-2xl md:text-3xl font-extrabold text-emerald-700">
-            {formatearMonto(balance.totalIngresos)}
-          </p>
+
+          {/* Lado derecho: Desglose Ingresos y Gastos */}
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 border-t md:border-t-0 md:border-l border-white/10 pt-4 md:pt-0 md:pl-6">
+            <div className="bg-white/5 backdrop-blur-xs rounded-xl p-3 border border-white/10">
+              <div className="flex items-center gap-1.5 text-xs text-emerald-300 font-medium mb-0.5">
+                <ArrowUpRight className="w-3.5 h-3.5 text-emerald-400 stroke-[2.5]" />
+                <span>Ingresos</span>
+              </div>
+              <p className="font-monto text-lg sm:text-xl font-bold text-white">
+                {formatearMonto(balance.totalIngresos)}
+              </p>
+            </div>
+
+            <div className="bg-white/5 backdrop-blur-xs rounded-xl p-3 border border-white/10">
+              <div className="flex items-center gap-1.5 text-xs text-rose-300 font-medium mb-0.5">
+                <ArrowDownRight className="w-3.5 h-3.5 text-rose-400 stroke-[2.5]" />
+                <span>Gastos</span>
+              </div>
+              <p className="font-monto text-lg sm:text-xl font-bold text-white">
+                {formatearMonto(balance.totalGastos)}
+              </p>
+            </div>
+          </div>
         </div>
 
-        <div className="bg-red-50/80 rounded-xl p-4 shadow-xs border border-red-200/80">
-          <div className="flex items-center gap-1.5 text-xs text-red-800 font-bold mb-1">
-            <ArrowDownCircle className="w-4 h-4 text-red-600" />
-            <span>Gastos</span>
+        {/* BARRA DE RATIO FINANCIERO MENSUAL */}
+        {balance.totalIngresos > 0 && (
+          <div className="relative z-10 mt-5 pt-4 border-t border-white/10">
+            <div className="flex items-center justify-between text-xs text-emerald-100/80 mb-1.5">
+              <span className="font-medium">Ratio de gasto sobre ingresos</span>
+              <span className="font-bold">
+                {Math.min(Math.round((balance.totalGastos / balance.totalIngresos) * 100), 100)}%
+              </span>
+            </div>
+            <div className="w-full h-2 bg-black/30 rounded-full overflow-hidden p-0.5">
+              <div
+                className="h-full rounded-full transition-all duration-500 bg-gradient-to-r from-emerald-400 via-amber-300 to-rose-400"
+                style={{
+                  width: `${Math.min(Math.round((balance.totalGastos / balance.totalIngresos) * 100), 100)}%`
+                }}
+              />
+            </div>
           </div>
-          <p className="font-monto text-2xl md:text-3xl font-extrabold text-red-600">
-            {formatearMonto(balance.totalGastos)}
-          </p>
-        </div>
+        )}
       </div>
 
       {/* FILTROS INTERACTIVOS EN FORMA DE PÍLDORA (Figuras 3 y 11) */}
@@ -318,27 +383,25 @@ function HistorialContenido() {
         <div className="space-y-2">
           {transacciones.map((tx) => {
             const esIngreso = tx.tipo_movimiento === 'Ingreso';
+            const catConfig = getCategoriaConfig(tx.nombre_categoria, esIngreso);
+            const IconoCat = catConfig.icon;
             return (
               <div
                 key={tx.id_transaccion}
                 className="bg-white rounded-xl p-3.5 px-4 shadow-xs border border-gray-100 flex items-center justify-between hover:border-gray-200 hover:shadow-sm transition-all interactive-card"
               >
-                {/* Lado izquierdo: Avatar con letra coloreado y datos */}
-                <div className="flex items-center gap-3">
+                {/* Lado izquierdo: Icono temático vectorial y datos */}
+                <div className="flex items-center gap-3 min-w-0 flex-1">
                   <div
-                    className={`w-10 h-10 rounded-full font-bold text-sm flex items-center justify-center shrink-0 border ${
-                      esIngreso
-                        ? 'bg-emerald-100 text-emerald-800 border-emerald-200'
-                        : 'bg-red-50 text-red-800 border-red-200'
-                    }`}
+                    className={`w-10 h-10 rounded-xl font-bold flex items-center justify-center shrink-0 border ${catConfig.bg}`}
                   >
-                    {getInicial(tx.nombre_categoria)}
+                    <IconoCat className="w-5 h-5 stroke-[2]" />
                   </div>
-                  <div>
-                    <h4 className="text-sm font-semibold text-gray-900 leading-tight">
+                  <div className="min-w-0 flex-1">
+                    <h4 className="text-sm font-semibold text-gray-900 leading-tight truncate">
                       {tx.nombre_categoria}
                     </h4>
-                    <p className="text-xs text-gray-500 mt-0.5">
+                    <p className="text-xs text-gray-500 mt-0.5 truncate">
                       {tx.nombre_miembro} • {formatearFecha(tx.fecha_registro)}
                       {tx.descripcion_gasto ? ` • ${tx.descripcion_gasto}` : ''}
                     </p>
