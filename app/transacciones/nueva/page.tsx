@@ -124,20 +124,18 @@ export default function NuevaTransaccionPage() {
 
   return (
     <div className="max-w-md mx-auto bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
-      {/* CABECERA CON CANCELAR A LA IZQUIERDA Y TÍTULO CENTRADO */}
-      <div className="grid grid-cols-[auto_1fr_auto] items-center pb-4 border-b border-gray-200">
+      {/* CABECERA EN UNA SOLA LÍNEA AL LADO DE CANCELAR */}
+      <div className="flex items-center gap-3 pb-4 border-b border-gray-200">
         <Link
           href="/"
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold transition active:scale-95 shadow-xs"
+          className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold transition active:scale-95 shadow-xs"
         >
           <span className="text-gray-500 font-bold">✕</span>
           <span>Cancelar</span>
         </Link>
-        <h2 className="text-base sm:text-lg font-serif font-bold text-[#12241F] tracking-tight text-center px-2">
+        <h2 className="text-base sm:text-lg font-serif font-bold text-[#12241F] tracking-tight whitespace-nowrap truncate">
           Nueva transacción
         </h2>
-        {/* Espacio invisible del mismo ancho para centrado perfecto */}
-        <div className="w-[88px]"></div>
       </div>
 
       {/* CONMUTADOR GASTO / INGRESO */}
