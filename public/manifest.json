@@ -1,0 +1,18 @@
+{
+  "name": "Finanzas del Hogar",
+  "short_name": "Finanzas",
+  "description": "Aplicación de finanzas del hogar para el control de gastos familiares",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#EEF0EA",
+  "theme_color": "#12241F",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
