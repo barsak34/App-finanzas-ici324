@@ -132,24 +132,24 @@ function HistorialContenido() {
         </Link>
       </div>
 
-      {/* TARJETAS DE BALANCE (Figuras 3 y 11: Ingresos $820.000 / Gastos $486.500) */}
+      {/* TARJETAS DE BALANCE CON COLORES REMARCADOS */}
       <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-          <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-1">
-            <ArrowUpCircle className="w-4 h-4 text-[#7A5C05]" />
+        <div className="bg-emerald-50/80 rounded-xl p-4 shadow-xs border border-emerald-200/80">
+          <div className="flex items-center gap-1.5 text-xs text-emerald-800 font-bold mb-1">
+            <ArrowUpCircle className="w-4 h-4 text-emerald-600" />
             <span>Ingresos</span>
           </div>
-          <p className="font-monto text-2xl md:text-3xl font-bold text-[#7A5C05]">
+          <p className="font-monto text-2xl md:text-3xl font-extrabold text-emerald-700">
             {formatearMonto(balance.totalIngresos)}
           </p>
         </div>
 
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-          <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-1">
-            <ArrowDownCircle className="w-4 h-4 text-[#8F3F2B]" />
+        <div className="bg-red-50/80 rounded-xl p-4 shadow-xs border border-red-200/80">
+          <div className="flex items-center gap-1.5 text-xs text-red-800 font-bold mb-1">
+            <ArrowDownCircle className="w-4 h-4 text-red-600" />
             <span>Gastos</span>
           </div>
-          <p className="font-monto text-2xl md:text-3xl font-bold text-[#8F3F2B]">
+          <p className="font-monto text-2xl md:text-3xl font-extrabold text-red-600">
             {formatearMonto(balance.totalGastos)}
           </p>
         </div>
@@ -234,9 +234,15 @@ function HistorialContenido() {
                 key={tx.id_transaccion}
                 className="bg-white rounded-xl p-3.5 px-4 shadow-sm border border-gray-100 flex items-center justify-between hover:bg-gray-50 transition"
               >
-                {/* Lado izquierdo: Avatar con letra y datos */}
+                {/* Lado izquierdo: Avatar con letra coloreado y datos */}
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#EEF0EA] text-[#12241F] font-bold text-sm flex items-center justify-center shrink-0">
+                  <div
+                    className={`w-10 h-10 rounded-full font-bold text-sm flex items-center justify-center shrink-0 border ${
+                      esIngreso
+                        ? 'bg-emerald-100 text-emerald-800 border-emerald-200'
+                        : 'bg-red-50 text-red-800 border-red-200'
+                    }`}
+                  >
                     {getInicial(tx.nombre_categoria)}
                   </div>
                   <div>
@@ -250,11 +256,11 @@ function HistorialContenido() {
                   </div>
                 </div>
 
-                {/* Lado derecho: Monto con color diferenciado */}
+                {/* Lado derecho: Monto con color diferenciado nítido */}
                 <div className="text-right">
                   <span
                     className={`font-monto text-base md:text-lg font-bold ${
-                      esIngreso ? 'text-[#7A5C05]' : 'text-[#8F3F2B]'
+                      esIngreso ? 'text-emerald-700' : 'text-red-600'
                     }`}
                   >
                     {esIngreso ? '+' : '-'} {formatearMonto(tx.monto)}
