@@ -3,6 +3,7 @@ import { getDatabase } from '@/lib/mongodb';
 
 export interface FiltrosTransaccion {
   id_hogar?: string;
+  id_categoria?: string;
   tipo_movimiento?: string;
   desde?: string;
   hasta?: string;
@@ -21,6 +22,14 @@ export async function listarTransacciones(filtros: FiltrosTransaccion = {}) {
     } catch {
       // Si no es ObjectId válido, buscar por coincidencia directa
       match.id_hogar = filtros.id_hogar;
+    }
+  }
+
+  if (filtros.id_categoria && filtros.id_categoria !== 'Todas') {
+    try {
+      match.id_categoria = new ObjectId(filtros.id_categoria);
+    } catch {
+      match.id_categoria = filtros.id_categoria;
     }
   }
 

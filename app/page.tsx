@@ -7,7 +7,7 @@ import {
   Plus, CheckCircle, ArrowDownCircle, ArrowUpCircle, Calendar, Home, ChevronDown,
   ShoppingCart, Zap, Car, UtensilsCrossed, HeartPulse, Briefcase, GraduationCap,
   Sparkles, Wallet, Tag as TagIcon, ArrowUpRight, ArrowDownRight, Layers,
-  Home as HomeIcon, PawPrint, Package, Trash2
+  Home as HomeIcon, PawPrint, Package, Trash2, Filter, X
 } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -43,9 +43,11 @@ function HistorialContenido() {
 
   // Filtros interactivos
   const [tipoFiltro, setTipoFiltro] = useState<'Todos' | 'Ingreso' | 'Egreso'>('Todos');
+  const [categoriaFiltro, setCategoriaFiltro] = useState<string>('Todas');
   const [fechaDesde, setFechaDesde] = useState('');
   const [fechaHasta, setFechaHasta] = useState('');
   const [mostrarAviso, setMostrarAviso] = useState(!!mensajeGuardado);
+  const [modalFiltrosAbierto, setModalFiltrosAbierto] = useState(false);
 
   // Gestión de múltiples hogares
   const [listaHogares, setListaHogares] = useState<any[]>([]);
@@ -206,6 +208,7 @@ function HistorialContenido() {
       const queryParams = new URLSearchParams();
       if (idHogar) queryParams.set('id_hogar', idHogar);
       if (tipoFiltro !== 'Todos') queryParams.set('tipo', tipoFiltro);
+      if (categoriaFiltro !== 'Todas') queryParams.set('id_categoria', categoriaFiltro);
       if (fechaDesde) queryParams.set('desde', fechaDesde);
       if (fechaHasta) queryParams.set('hasta', fechaHasta);
 
@@ -220,7 +223,7 @@ function HistorialContenido() {
     } finally {
       setCargando(false);
     }
-  }, [tipoFiltro, fechaDesde, fechaHasta]);
+  }, [tipoFiltro, categoriaFiltro, fechaDesde, fechaHasta]);
 
   useEffect(() => {
     // Verificar si hay sesión
@@ -314,23 +317,9 @@ function HistorialContenido() {
         </div>
       )}
 
-      {/* HEADER CON BOTÓN ESCRITORIO Y SELECTOR DE HOGAR */}
+      {/* HEADER LIMPIO: SOLO HISTORIAL ARRIBA DE LA TARJETA */}
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-serif font-bold text-[#12241F]">Historial</h1>
-          <div className="flex items-center gap-2 mt-1">
-            <span className="text-xs text-gray-500">Hogar:</span>
-            <button
-              type="button"
-              onClick={() => setModalHogarAbierto(true)}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white border border-gray-200 hover:border-[#1F5C4D] text-xs font-semibold text-gray-800 shadow-2xs transition active:scale-95"
-            >
-              <Home className="w-3.5 h-3.5 text-[#1F5C4D]" />
-              <span>{usuario?.nombre_hogar || 'Departamento'}</span>
-              <ChevronDown className="w-3 h-3 text-gray-400" />
-            </button>
-          </div>
-        </div>
+        <h1 className="text-3xl font-serif font-bold text-[#12241F]">Historial</h1>
         <Link
           href="/transacciones/nueva"
           className="hidden md:inline-flex items-center gap-2 bg-[#1F5C4D] hover:bg-[#18473c] text-white px-5 py-2.5 rounded-lg text-sm font-medium transition shadow-sm active:scale-95"
@@ -340,21 +329,36 @@ function HistorialContenido() {
         </Link>
       </div>
 
-      {/* TARJETA DE BALANCE PRINCIPAL ESTILO FINTECH */}
+      {/* TARJETA DE BALANCE PRINCIPAL ESTILO FINTECH CON SELECTOR DE HOGAR INTEGRADO */}
       <div className="relative overflow-hidden bg-gradient-to-br from-[#12241F] via-[#16332B] to-[#1F5C4D] rounded-2xl p-6 text-white shadow-md border border-emerald-950/40">
+        {/* Cabecera integrada dentro de la tarjeta: Hogar activo en pastilla elegante */}
+        <div className="flex items-center justify-between pb-4 mb-4 border-b border-white/10">
+          <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-emerald-300/80 font-semibold">
+            <Wallet className="w-4 h-4 text-emerald-300" />
+            <span>Balance disponible</span>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setModalHogarAbierto(true)}
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-xs font-medium text-white border border-white/15 backdrop-blur-xs transition active:scale-95"
+            title="Cambiar de hogar"
+          >
+            <Home className="w-3.5 h-3.5 text-emerald-300" />
+            <span className="font-semibold">{usuario?.nombre_hogar || 'Departamento'}</span>
+            <ChevronDown className="w-3 h-3 text-emerald-300/80" />
+          </button>
+        </div>
+
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          {/* Lado izquierdo: Balance Neto */}
+          {/* Saldo principal */}
           <div>
-            <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-emerald-300/80 font-semibold mb-1">
-              <Wallet className="w-4 h-4 text-emerald-300" />
-              <span>Balance neto disponible</span>
-            </div>
             <p className="font-monto text-3xl md:text-4xl font-extrabold text-white tracking-tight">
               {formatearMonto(balance.balanceNeto)}
             </p>
           </div>
 
-          {/* Lado derecho: Desglose Ingresos y Gastos */}
+          {/* Desglose Ingresos y Gastos */}
           <div className="grid grid-cols-2 gap-3 sm:gap-4 border-t md:border-t-0 md:border-l border-white/10 pt-4 md:pt-0 md:pl-6">
             <div className="bg-white/5 backdrop-blur-xs rounded-xl p-3 border border-white/10">
               <div className="flex items-center gap-1.5 text-xs text-emerald-300 font-medium mb-0.5">
@@ -379,26 +383,59 @@ function HistorialContenido() {
         </div>
       </div>
 
-      {/* FILTROS INTERACTIVOS EN FORMA DE PÍLDORA (Figuras 3 y 11) */}
+      {/* SECCIÓN DE FILTROS INTERACTIVOS CON BOTÓN DE CATEGORÍAS Y FECHAS */}
       <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 space-y-3">
-        <div className="flex flex-wrap items-center gap-2">
-          {(['Todos', 'Ingreso', 'Egreso'] as const).map((tipo) => {
-            const label = tipo === 'Ingreso' ? 'Ingresos' : tipo === 'Egreso' ? 'Egresos' : 'Todos';
-            const activo = tipoFiltro === tipo;
-            return (
-              <button
-                key={tipo}
-                onClick={() => setTipoFiltro(tipo)}
-                className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
-                  activo
-                    ? 'bg-[#12241F] text-white shadow-sm'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                }`}
+        {/* Fila superior: Tipo de movimiento (Todos/Ingresos/Egresos) + Botón de Categorías con logo típico */}
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center gap-1.5">
+            {(['Todos', 'Ingreso', 'Egreso'] as const).map((tipo) => {
+              const label = tipo === 'Ingreso' ? 'Ingresos' : tipo === 'Egreso' ? 'Egresos' : 'Todos';
+              const activo = tipoFiltro === tipo;
+              return (
+                <button
+                  key={tipo}
+                  onClick={() => setTipoFiltro(tipo)}
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                    activo
+                      ? 'bg-[#12241F] text-white shadow-xs'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  }`}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Botón con logo típico de Filtro por Categorías */}
+          <button
+            type="button"
+            onClick={() => setModalFiltrosAbierto(true)}
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition active:scale-95 border ${
+              categoriaFiltro !== 'Todas'
+                ? 'bg-emerald-50 text-[#1F5C4D] border-emerald-300 shadow-xs'
+                : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100'
+            }`}
+          >
+            <Filter className="w-3.5 h-3.5 text-[#1F5C4D]" />
+            <span>
+              {categoriaFiltro === 'Todas'
+                ? 'Categorías'
+                : (categoriasHogar.find((c) => c.id_categoria === categoriaFiltro)?.nombre_categoria || 'Categoría')}
+            </span>
+            {categoriaFiltro !== 'Todas' && (
+              <span
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCategoriaFiltro('Todas');
+                }}
+                className="w-4 h-4 rounded-full bg-emerald-200/80 hover:bg-emerald-300 flex items-center justify-center text-[10px] text-emerald-900 ml-0.5"
+                title="Quitar filtro de categoría"
               >
-                {label}
-              </button>
-            );
-          })}
+                ✕
+              </span>
+            )}
+          </button>
         </div>
 
         {/* FILTROS POR FECHA CON CALENDARIO DESPLEGABLE */}
@@ -743,6 +780,93 @@ function HistorialContenido() {
                 {guardandoTx ? 'Guardando...' : 'Guardar cambios'}
               </button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL FLOTANTE PARA FILTRAR POR CATEGORÍAS */}
+      {modalFiltrosAbierto && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
+          <div className="bg-white rounded-2xl w-full max-w-sm p-6 space-y-4 shadow-xl border border-gray-100 max-h-[85vh] flex flex-col">
+            {/* Cabecera modal en una sola línea */}
+            <div className="flex items-center justify-between pb-3 border-b border-gray-200 shrink-0">
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setModalFiltrosAbierto(false)}
+                  className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold transition active:scale-95 shadow-xs"
+                >
+                  <span className="text-gray-500 font-bold">✕</span>
+                  <span>Cerrar</span>
+                </button>
+                <h3 className="text-base sm:text-lg font-serif font-bold text-[#12241F] tracking-tight whitespace-nowrap truncate">
+                  Filtrar por categoría
+                </h3>
+              </div>
+            </div>
+
+            {/* Listado elegante de categorías */}
+            <div className="space-y-1.5 overflow-y-auto pr-1 flex-1">
+              {/* Opción "Todas las categorías" */}
+              <button
+                type="button"
+                onClick={() => {
+                  setCategoriaFiltro('Todas');
+                  setModalFiltrosAbierto(false);
+                }}
+                className={`w-full p-3 rounded-xl border flex items-center justify-between transition-all ${
+                  categoriaFiltro === 'Todas'
+                    ? 'bg-emerald-50/80 border-[#1F5C4D] shadow-xs'
+                    : 'bg-white border-gray-100 hover:bg-gray-50'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-100 text-[#1F5C4D] flex items-center justify-center font-bold text-xs">
+                    <Layers className="w-4 h-4" />
+                  </div>
+                  <span className="font-serif font-semibold text-sm text-[#12241F]">
+                    Todas las categorías
+                  </span>
+                </div>
+                {categoriaFiltro === 'Todas' && (
+                  <CheckCircle className="w-4 h-4 text-[#1F5C4D]" />
+                )}
+              </button>
+
+              {/* Cada categoría individual */}
+              {categoriasHogar.map((cat) => {
+                const config = getCategoriaConfig(cat.nombre_categoria, false);
+                const IconoCat = config.icon;
+                const seleccionada = categoriaFiltro === cat.id_categoria;
+                return (
+                  <button
+                    type="button"
+                    key={cat.id_categoria}
+                    onClick={() => {
+                      setCategoriaFiltro(cat.id_categoria);
+                      setModalFiltrosAbierto(false);
+                    }}
+                    className={`w-full p-3 rounded-xl border flex items-center justify-between transition-all ${
+                      seleccionada
+                        ? 'bg-emerald-50/80 border-[#1F5C4D] shadow-xs'
+                        : 'bg-white border-gray-100 hover:bg-gray-50'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center border ${config.bg}`}>
+                        <IconoCat className="w-4 h-4" />
+                      </div>
+                      <span className="font-serif font-medium text-sm text-gray-900">
+                        {cat.nombre_categoria}
+                      </span>
+                    </div>
+                    {seleccionada && (
+                      <CheckCircle className="w-4 h-4 text-[#1F5C4D]" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
       )}

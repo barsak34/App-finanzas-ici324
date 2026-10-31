@@ -7,12 +7,13 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const id_hogar = searchParams.get('id_hogar') || undefined;
+    const id_categoria = searchParams.get('id_categoria') || undefined;
     const tipo = searchParams.get('tipo') || undefined;
     const desde = searchParams.get('desde') || undefined;
     const hasta = searchParams.get('hasta') || undefined;
 
     const [transacciones, balance] = await Promise.all([
-      listarTransacciones({ id_hogar, tipo_movimiento: tipo, desde, hasta }),
+      listarTransacciones({ id_hogar, id_categoria, tipo_movimiento: tipo, desde, hasta }),
       obtenerBalanceHogar(id_hogar)
     ]);
 
