@@ -7,7 +7,7 @@ import {
   Plus, CheckCircle, ArrowDownCircle, ArrowUpCircle, Calendar, Home, ChevronDown,
   ShoppingCart, Zap, Car, UtensilsCrossed, HeartPulse, Briefcase, GraduationCap,
   Sparkles, Wallet, Tag as TagIcon, ArrowUpRight, ArrowDownRight, Layers,
-  Home as HomeIcon, PawPrint, Package
+  Home as HomeIcon, PawPrint, Package, Trash2
 } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -52,6 +52,97 @@ function HistorialContenido() {
   const [modalHogarAbierto, setModalHogarAbierto] = useState(false);
   const [nombreNuevoHogar, setNombreNuevoHogar] = useState('');
   const [creandoHogar, setCreandoHogar] = useState(false);
+
+  // Estados para modal de edición de transacción
+  const [modalTxAbierto, setModalTxAbierto] = useState(false);
+  const [txEditando, setTxEditando] = useState<Transaccion | null>(null);
+  const [editMonto, setEditMonto] = useState('');
+  const [editTipo, setEditTipo] = useState<'Ingreso' | 'Egreso'>('Egreso');
+  const [editCategoria, setEditCategoria] = useState('');
+  const [editMedioPago, setEditMedioPago] = useState('Débito');
+  const [editDescripcion, setEditDescripcion] = useState('');
+  const [editFecha, setEditFecha] = useState('');
+  const [guardandoTx, setGuardandoTx] = useState(false);
+  const [categoriasHogar, setCategoriasHogar] = useState<any[]>([]);
+
+  const formatearMontoInput = (valor: string) => {
+    const soloNumeros = valor.replace(/\D/g, '');
+    if (!soloNumeros) return '';
+    return Number(soloNumeros).toLocaleString('es-CL');
+  };
+
+  const abrirEditarTx = (tx: Transaccion) => {
+    setTxEditando(tx);
+    setEditMonto(formatearMontoInput(String(tx.monto)));
+    setEditTipo(tx.tipo_movimiento);
+    setEditCategoria(tx.id_categoria);
+    setEditMedioPago(tx.medio_pago || 'Débito');
+    setEditDescripcion(tx.descripcion_gasto || '');
+    setEditFecha(tx.fecha_registro ? tx.fecha_registro.split('T')[0] : '');
+    setModalTxAbierto(true);
+  };
+
+  const handleGuardarEdicionTx = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!txEditando) return;
+    const montoLimpio = Number(editMonto.replace(/\./g, ''));
+    if (!montoLimpio || montoLimpio <= 0) {
+      alert('Ingresa un monto válido mayor a 0');
+      return;
+    }
+
+    setGuardandoTx(true);
+    try {
+      const res = await fetch(`/api/mongo/transacciones/${txEditando.id_transaccion}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          monto: montoLimpio,
+          tipo_movimiento: editTipo,
+          id_categoria: editCategoria,
+          medio_pago: editMedioPago,
+          descripcion_gasto: editDescripcion,
+          fecha_registro: editFecha ? new Date(editFecha).toISOString() : undefined
+        })
+      });
+
+      if (res.ok) {
+        setModalTxAbierto(false);
+        setTxEditando(null);
+        if (usuario) cargarDatos(usuario.id_hogar);
+      } else {
+        const data = await res.json();
+        alert(data.mensaje || 'Error al actualizar');
+      }
+    } catch (err) {
+      alert('Error de conexión al guardar cambios');
+    } finally {
+      setGuardandoTx(false);
+    }
+  };
+
+  const handleEliminarTx = async () => {
+    if (!txEditando) return;
+    if (!confirm('¿Estás seguro de que deseas eliminar este movimiento?')) return;
+
+    setGuardandoTx(true);
+    try {
+      const res = await fetch(`/api/mongo/transacciones/${txEditando.id_transaccion}`, {
+        method: 'DELETE'
+      });
+      if (res.ok) {
+        setModalTxAbierto(false);
+        setTxEditando(null);
+        if (usuario) cargarDatos(usuario.id_hogar);
+      } else {
+        alert('Error al eliminar');
+      }
+    } catch (err) {
+      alert('Error de conexión');
+    } finally {
+      setGuardandoTx(false);
+    }
+  };
 
   const cargarHogares = async () => {
     try {
@@ -142,6 +233,14 @@ function HistorialContenido() {
     setUsuario(sesion);
     cargarDatos(sesion.id_hogar);
     cargarHogares();
+
+    // Cargar categorías para edición
+    fetch('/api/mongo/categorias')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.categorias) setCategoriasHogar(data.categorias);
+      })
+      .catch((err) => console.error(err));
   }, [router, cargarDatos]);
 
   useEffect(() => {
@@ -378,7 +477,9 @@ function HistorialContenido() {
             return (
               <div
                 key={tx.id_transaccion}
-                className="bg-white rounded-xl p-3.5 px-4 shadow-xs border border-gray-100 flex items-center justify-between hover:border-gray-200 hover:shadow-sm transition-all interactive-card"
+                onClick={() => abrirEditarTx(tx)}
+                className="bg-white rounded-xl p-3.5 px-4 shadow-xs border border-gray-100 flex items-center justify-between hover:border-gray-200 hover:shadow-sm transition-all interactive-card cursor-pointer"
+                title="Toca para editar movimiento"
               >
                 {/* Lado izquierdo: Icono temático vectorial y datos */}
                 <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -495,6 +596,152 @@ function HistorialContenido() {
                   {creandoHogar ? 'Creando...' : 'Crear'}
                 </button>
               </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL FLOTANTE PARA EDITAR / ELIMINAR TRANSACCIÓN */}
+      {modalTxAbierto && txEditando && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
+          <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4 shadow-xl border border-gray-100 max-h-[90vh] overflow-y-auto">
+            {/* Cabecera en una sola línea al lado de cancelar */}
+            <div className="flex items-center justify-between pb-3 border-b border-gray-200">
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setModalTxAbierto(false)}
+                  className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold transition active:scale-95 shadow-xs"
+                >
+                  <span className="text-gray-500 font-bold">✕</span>
+                  <span>Cancelar</span>
+                </button>
+                <h3 className="text-base sm:text-lg font-serif font-bold text-[#12241F] tracking-tight whitespace-nowrap truncate">
+                  Editar movimiento
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={handleEliminarTx}
+                disabled={guardandoTx}
+                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-rose-600 hover:bg-rose-50 text-xs font-semibold transition active:scale-95 border border-rose-200"
+                title="Eliminar movimiento"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Eliminar</span>
+              </button>
+            </div>
+
+            <form onSubmit={handleGuardarEdicionTx} className="space-y-4">
+              {/* Conmutador Tipo de Movimiento */}
+              <div className="grid grid-cols-2 gap-1 bg-gray-100 p-1 rounded-xl">
+                <button
+                  type="button"
+                  onClick={() => setEditTipo('Egreso')}
+                  className={`py-2 text-xs font-semibold rounded-lg transition-all ${
+                    editTipo === 'Egreso'
+                      ? 'bg-white text-gray-900 shadow-xs'
+                      : 'text-gray-500 hover:text-gray-900'
+                  }`}
+                >
+                  Gasto
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setEditTipo('Ingreso')}
+                  className={`py-2 text-xs font-semibold rounded-lg transition-all ${
+                    editTipo === 'Ingreso'
+                      ? 'bg-white text-gray-900 shadow-xs'
+                      : 'text-gray-500 hover:text-gray-900'
+                  }`}
+                >
+                  Ingreso
+                </button>
+              </div>
+
+              {/* Monto con formato de puntos automático */}
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1">Monto ($)</label>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={editMonto}
+                  onChange={(e) => setEditMonto(formatearMontoInput(e.target.value))}
+                  required
+                  className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-lg font-bold text-gray-900 focus:outline-none focus:border-[#1F5C4D] bg-[#FAFAFA]"
+                />
+              </div>
+
+              {/* Categoría */}
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1">Categoría</label>
+                <select
+                  value={editCategoria}
+                  onChange={(e) => setEditCategoria(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs text-gray-800 bg-[#FAFAFA] focus:outline-none focus:border-[#1F5C4D]"
+                >
+                  {categoriasHogar.map((cat) => (
+                    <option key={cat.id_categoria} value={cat.id_categoria}>
+                      {cat.nombre_categoria}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Medio de Pago */}
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1">Medio de pago</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {['Débito', 'Efectivo', 'Crédito'].map((medio) => (
+                    <button
+                      type="button"
+                      key={medio}
+                      onClick={() => setEditMedioPago(medio)}
+                      className={`py-2 rounded-xl text-xs font-medium border text-center transition-all ${
+                        editMedioPago === medio
+                          ? 'bg-[#12241F] text-white border-[#12241F]'
+                          : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'
+                      }`}
+                    >
+                      {medio}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Fecha */}
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1">Fecha</label>
+                <input
+                  type="date"
+                  value={editFecha}
+                  onChange={(e) => setEditFecha(e.target.value)}
+                  onClick={(e) => e.currentTarget.showPicker?.()}
+                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs cursor-pointer focus:outline-none focus:border-[#1F5C4D] bg-[#FAFAFA]"
+                />
+              </div>
+
+              {/* Descripción */}
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1">Descripción (opcional)</label>
+                <input
+                  type="text"
+                  value={editDescripcion}
+                  onChange={(e) => setEditDescripcion(e.target.value)}
+                  autoCapitalize="sentences"
+                  placeholder="Ej: Compra mensual"
+                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs focus:outline-none focus:border-[#1F5C4D] bg-[#FAFAFA]"
+                />
+              </div>
+
+              {/* Botón Guardar cambios */}
+              <button
+                type="submit"
+                disabled={guardandoTx}
+                className="w-full py-3 bg-[#1F5C4D] hover:bg-[#18473c] text-white font-semibold rounded-xl text-xs transition-all shadow-xs active:scale-[0.99] disabled:opacity-50"
+              >
+                {guardandoTx ? 'Guardando...' : 'Guardar cambios'}
+              </button>
             </form>
           </div>
         </div>

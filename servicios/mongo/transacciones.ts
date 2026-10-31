@@ -170,3 +170,44 @@ export async function crearTransaccion(datos: {
     id_categoria: datos.id_categoria
   };
 }
+
+/**
+ * Actualiza una transacción existente en MongoDB
+ */
+export async function actualizarTransaccion(id_transaccion: string, datos: {
+  id_categoria?: string;
+  id_miembro?: string;
+  tipo_movimiento?: 'Ingreso' | 'Egreso';
+  monto?: number;
+  medio_pago?: string;
+  descripcion_gasto?: string;
+  fecha_registro?: string;
+}) {
+  const db = await getDatabase();
+  const actualizacion: any = {};
+
+  if (datos.id_categoria) actualizacion.id_categoria = new ObjectId(datos.id_categoria);
+  if (datos.id_miembro) actualizacion.id_miembro = datos.id_miembro;
+  if (datos.tipo_movimiento) actualizacion.tipo_movimiento = datos.tipo_movimiento;
+  if (datos.monto !== undefined) actualizacion.monto = Number(datos.monto);
+  if (datos.medio_pago) actualizacion.medio_pago = datos.medio_pago;
+  if (datos.descripcion_gasto !== undefined) actualizacion.descripcion_gasto = datos.descripcion_gasto.trim();
+  if (datos.fecha_registro) actualizacion.fecha_registro = new Date(datos.fecha_registro);
+
+  await db.collection('transacciones').updateOne(
+    { _id: new ObjectId(id_transaccion) },
+    { $set: actualizacion }
+  );
+
+  return { id_transaccion, ...actualizacion };
+}
+
+/**
+ * Elimina una transacción de MongoDB
+ */
+export async function eliminarTransaccion(id_transaccion: string) {
+  const db = await getDatabase();
+  await db.collection('transacciones').deleteOne({ _id: new ObjectId(id_transaccion) });
+  return { id_transaccion, eliminado: true };
+}
+
