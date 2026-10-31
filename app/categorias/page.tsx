@@ -180,19 +180,20 @@ export default function CategoriasPage() {
       {modalAbierto && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
           <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-5 shadow-xl border border-gray-100">
-            {/* Cabecera modal */}
-            <div className="flex items-center justify-between pb-2 border-b border-gray-100">
+            {/* Cabecera modal resaltada */}
+            <div className="flex items-center justify-between pb-4 border-b border-gray-200">
               <button
                 type="button"
                 onClick={cerrarModal}
-                className="text-xs font-medium text-gray-500 hover:text-gray-800"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold transition active:scale-95 shadow-xs"
               >
-                Cancelar
+                <span className="text-gray-500 font-bold">✕</span>
+                <span>Cancelar</span>
               </button>
-              <h3 className="text-sm font-bold text-gray-900">
+              <h3 className="text-xl font-serif font-bold text-[#12241F] tracking-tight">
                 {modoEdicion ? 'Editar categoría' : 'Nueva categoría'}
               </h3>
-              <div className="w-10"></div>
+              <div className="w-20"></div>
             </div>
 
             <form onSubmit={handleGuardar} className="space-y-4">

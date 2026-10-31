@@ -228,31 +228,32 @@ export default function MiembrosPerfilPage() {
         )}
       </div>
 
-      {/* BOTÓN CERRAR SESIÓN (Figura 9 del informe) */}
+      {/* BOTÓN CERRAR SESIÓN RESALTADO */}
       <div className="pt-4">
         <button
           onClick={handleCerrarSesion}
-          className="w-full py-3 border border-gray-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200 text-gray-700 font-medium rounded-xl text-xs transition flex items-center justify-center gap-2"
+          className="w-full py-3.5 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 font-semibold rounded-xl text-sm transition-all flex items-center justify-center gap-2 shadow-xs active:scale-[0.99]"
         >
-          <LogOut className="w-4 h-4" />
+          <LogOut className="w-4 h-4 text-red-600 stroke-[2.5]" />
           Cerrar sesión
         </button>
       </div>
 
-      {/* MODAL NUEVO MIEMBRO */}
+      {/* MODAL NUEVO MIEMBRO RESALTADO */}
       {modalAbierto && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
           <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4 shadow-xl border border-gray-100">
-            <div className="flex items-center justify-between pb-2 border-b border-gray-100">
+            <div className="flex items-center justify-between pb-4 border-b border-gray-200">
               <button
                 type="button"
                 onClick={() => setModalAbierto(false)}
-                className="text-xs font-medium text-gray-500 hover:text-gray-800"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold transition active:scale-95 shadow-xs"
               >
-                Cancelar
+                <span className="text-gray-500 font-bold">✕</span>
+                <span>Cancelar</span>
               </button>
-              <h3 className="text-sm font-bold text-gray-900">Agregar integrante</h3>
-              <div className="w-10"></div>
+              <h3 className="text-xl font-serif font-bold text-[#12241F] tracking-tight">Agregar integrante</h3>
+              <div className="w-20"></div>
             </div>
 
             {errorModal && (

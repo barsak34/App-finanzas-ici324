@@ -121,13 +121,17 @@ export default function NuevaTransaccionPage() {
 
   return (
     <div className="max-w-md mx-auto bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
-      {/* CABECERA (Figura 4: "Cancelar" y "Nueva transacción") */}
-      <div className="flex items-center justify-between pb-3 border-b border-gray-100">
-        <Link href="/" className="text-xs font-medium text-gray-500 hover:text-gray-800">
-          Cancelar
+      {/* CABECERA RESALTADA (Título prominente y botón Cancelar visible) */}
+      <div className="flex items-center justify-between pb-4 border-b border-gray-200">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold transition active:scale-95 shadow-xs"
+        >
+          <span className="text-gray-500 font-bold">✕</span>
+          <span>Cancelar</span>
         </Link>
-        <h2 className="text-sm font-bold text-gray-900">Nueva transacción</h2>
-        <div className="w-10"></div>
+        <h2 className="text-xl font-serif font-bold text-[#12241F] tracking-tight">Nueva transacción</h2>
+        <div className="w-20"></div>
       </div>
 
       {/* CONMUTADOR GASTO / INGRESO */}

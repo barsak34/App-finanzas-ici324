@@ -64,9 +64,9 @@ export default function Navegacion({ children }: Props) {
         <div>
           <button
             onClick={handleCerrarSesion}
-            className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-300 hover:text-red-300 hover:bg-[#1A332C] rounded-lg w-full transition-colors"
+            className="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-red-300 hover:text-white bg-red-950/40 hover:bg-red-900/60 border border-red-800/40 rounded-xl w-full transition-all shadow-xs"
           >
-            <LogOut className="w-5 h-5" />
+            <LogOut className="w-5 h-5 text-red-400 stroke-[2.5]" />
             Cerrar sesión
           </button>
         </div>
