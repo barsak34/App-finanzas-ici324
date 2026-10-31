@@ -72,6 +72,8 @@ function HistorialContenido() {
       return;
     }
     const sesion = JSON.parse(sesionStr);
+    sesion.nombre_hogar = 'Departamento';
+    localStorage.setItem('usuario_sesion', JSON.stringify(sesion));
     setUsuario(sesion);
     cargarDatos(sesion.id_hogar);
   }, [router, cargarDatos]);
@@ -117,11 +119,9 @@ function HistorialContenido() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-serif font-bold text-[#12241F]">Historial</h1>
-          {usuario && (
-            <p className="text-xs text-gray-500 mt-1">
-              Hogar: <span className="font-medium text-gray-700">{usuario.nombre_hogar}</span>
-            </p>
-          )}
+          <p className="text-xs text-gray-500 mt-1">
+            Hogar: <span className="font-medium text-gray-700">Departamento</span>
+          </p>
         </div>
         <Link
           href="/transacciones/nueva"

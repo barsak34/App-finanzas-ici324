@@ -78,7 +78,8 @@ export default function Navegacion({ children }: Props) {
       </main>
 
       {/* BOTTOM NAVIGATION PARA MÓVIL (Fig. 3, 7, 9 del informe) */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 h-16 px-4 grid grid-cols-4 items-center z-50 shadow-md">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 h-16 px-2 grid grid-cols-4 items-center z-50 shadow-lg">
+        {/* 1. Historial */}
         <Link
           href="/"
           className={`flex flex-col items-center justify-center text-xs font-medium ${
@@ -89,17 +90,18 @@ export default function Navegacion({ children }: Props) {
           <span className="text-[11px]">Historial</span>
         </Link>
 
-        {/* Botón "+" para Nueva Transacción centrado en la barra */}
+        {/* 2. Botón "+" salido del margen (como en el mockup original) */}
         <div className="flex items-center justify-center">
           <Link
             href="/transacciones/nueva"
-            className="w-10 h-10 bg-[#1F5C4D] text-white rounded-full flex items-center justify-center shadow-sm hover:bg-[#18473c] transition-transform active:scale-90"
+            className="w-12 h-12 bg-[#1F5C4D] text-white rounded-full flex items-center justify-center shadow-md hover:bg-[#18473c] transition-transform active:scale-90 -mt-6 border-4 border-[#EEF0EA]"
             title="Nueva transacción"
           >
-            <Plus className="w-5 h-5" />
+            <Plus className="w-6 h-6 stroke-[2.5]" />
           </Link>
         </div>
 
+        {/* 3. Categorías */}
         <Link
           href="/categorias"
           className={`flex flex-col items-center justify-center text-xs font-medium ${
@@ -110,6 +112,7 @@ export default function Navegacion({ children }: Props) {
           <span className="text-[11px]">Categorías</span>
         </Link>
 
+        {/* 4. Perfil */}
         <Link
           href="/miembros"
           className={`flex flex-col items-center justify-center text-xs font-medium ${
