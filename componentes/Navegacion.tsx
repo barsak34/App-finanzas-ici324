@@ -72,8 +72,8 @@ export default function Navegacion({ children }: Props) {
         </div>
       </aside>
 
-      {/* CONTENIDO PRINCIPAL */}
-      <main className="flex-1 pb-24 md:pb-8 max-w-4xl mx-auto w-full p-4 md:p-8">
+      {/* CONTENIDO PRINCIPAL CON ANIMACIÓN SUAVE ENTRE PESTAÑAS */}
+      <main key={pathname} className="flex-1 pb-24 md:pb-8 max-w-4xl mx-auto w-full p-4 md:p-8 animate-page-enter">
         {children}
       </main>
 

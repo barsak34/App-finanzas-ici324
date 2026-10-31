@@ -251,29 +251,23 @@ function HistorialContenido() {
         <div className="grid grid-cols-2 gap-2 pt-2 border-t border-gray-100 text-xs">
           <div>
             <label className="block text-gray-500 mb-1 font-medium">Desde</label>
-            <div className="relative">
-              <input
-                type="date"
-                value={fechaDesde}
-                onChange={(e) => setFechaDesde(e.target.value)}
-                onClick={(e) => e.currentTarget.showPicker?.()}
-                className="w-full pl-3 pr-8 py-2 rounded-lg border border-gray-200 text-xs cursor-pointer focus:outline-none focus:border-[#1F5C4D] bg-[#FAFAFA]"
-              />
-              <Calendar className="w-4 h-4 text-gray-400 absolute right-2.5 top-2.5 pointer-events-none" />
-            </div>
+            <input
+              type="date"
+              value={fechaDesde}
+              onChange={(e) => setFechaDesde(e.target.value)}
+              onClick={(e) => e.currentTarget.showPicker?.()}
+              className="w-full px-3 py-2 rounded-lg border border-gray-200 text-xs cursor-pointer focus:outline-none focus:border-[#1F5C4D] bg-[#FAFAFA]"
+            />
           </div>
           <div>
             <label className="block text-gray-500 mb-1 font-medium">Hasta</label>
-            <div className="relative">
-              <input
-                type="date"
-                value={fechaHasta}
-                onChange={(e) => setFechaHasta(e.target.value)}
-                onClick={(e) => e.currentTarget.showPicker?.()}
-                className="w-full pl-3 pr-8 py-2 rounded-lg border border-gray-200 text-xs cursor-pointer focus:outline-none focus:border-[#1F5C4D] bg-[#FAFAFA]"
-              />
-              <Calendar className="w-4 h-4 text-gray-400 absolute right-2.5 top-2.5 pointer-events-none" />
-            </div>
+            <input
+              type="date"
+              value={fechaHasta}
+              onChange={(e) => setFechaHasta(e.target.value)}
+              onClick={(e) => e.currentTarget.showPicker?.()}
+              className="w-full px-3 py-2 rounded-lg border border-gray-200 text-xs cursor-pointer focus:outline-none focus:border-[#1F5C4D] bg-[#FAFAFA]"
+            />
           </div>
         </div>
       </div>
@@ -417,6 +411,7 @@ function HistorialContenido() {
                   type="text"
                   value={nombreNuevoHogar}
                   onChange={(e) => setNombreNuevoHogar(e.target.value)}
+                  autoCapitalize="words"
                   placeholder="Ej: Casa de Playa"
                   className="flex-1 px-3 py-2 rounded-xl border border-gray-200 text-xs focus:outline-none focus:border-[#1F5C4D] bg-[#FAFAFA]"
                   required

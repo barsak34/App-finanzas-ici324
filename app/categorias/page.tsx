@@ -203,6 +203,7 @@ export default function CategoriasPage() {
                   type="text"
                   value={nombre}
                   onChange={(e) => setNombre(e.target.value)}
+                  autoCapitalize="sentences"
                   placeholder="Ej: Supermercado"
                   required
                   className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-xs focus:outline-none focus:border-[#1F5C4D] bg-[#FAFAFA]"
@@ -215,6 +216,7 @@ export default function CategoriasPage() {
                   type="text"
                   value={descripcion}
                   onChange={(e) => setDescripcion(e.target.value)}
+                  autoCapitalize="sentences"
                   placeholder="Compras de despensa y artículos del hogar"
                   className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-xs focus:outline-none focus:border-[#1F5C4D] bg-[#FAFAFA]"
                 />

@@ -28,3 +28,25 @@ body {
 .font-monto {
   font-family: var(--font-serif);
 }
+
+/* Transición suave y fluida al cambiar de pestaña / pantalla */
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-page-enter {
+  animation: pageFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Primera letra en mayúscula por defecto al escribir en celular */
+input:not([type="password"]):not([type="email"]):not([type="date"]):not([type="number"]),
+textarea {
+  text-transform: capitalize;
+}
