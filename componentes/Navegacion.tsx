@@ -77,11 +77,11 @@ export default function Navegacion({ children }: Props) {
         {children}
       </main>
 
-      {/* BOTÓN FLOTANTE (+) POR ENCIMA DEL LOGO DE PERFIL EN PANTALLA */}
+      {/* BOTÓN FLOTANTE (+) DE UN SOLO COLOR VERDE SÓLIDO (SIN CONTORNO BLANCO) */}
       <div className="md:hidden fixed bottom-20 right-5 z-50">
         <Link
           href="/transacciones/nueva"
-          className="w-14 h-14 bg-[#1F5C4D] hover:bg-[#18473c] text-white rounded-full flex items-center justify-center shadow-xl active:scale-95 transition-all border-2 border-white"
+          className="w-14 h-14 bg-[#1F5C4D] hover:bg-[#18473c] text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-all"
           title="Nueva transacción"
         >
           <Plus className="w-7 h-7 stroke-[2.5]" />

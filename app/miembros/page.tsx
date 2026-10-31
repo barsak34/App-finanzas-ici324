@@ -172,8 +172,22 @@ export default function MiembrosPerfilPage() {
         </div>
 
         {cargando ? (
-          <div className="bg-white rounded-xl p-8 text-center text-gray-400 text-sm">
-            Cargando integrantes...
+          <div className="space-y-2 animate-fadeIn">
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="bg-white rounded-xl p-3.5 px-4 shadow-xs border border-gray-100 flex items-center justify-between"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full skeleton-shimmer shrink-0" />
+                  <div className="space-y-1.5">
+                    <div className="w-32 h-4 rounded-md skeleton-shimmer" />
+                    <div className="w-44 h-3 rounded-md skeleton-shimmer" />
+                  </div>
+                </div>
+                <div className="w-16 h-6 rounded-full skeleton-shimmer shrink-0" />
+              </div>
+            ))}
           </div>
         ) : (
           <div className="space-y-2">
@@ -182,7 +196,7 @@ export default function MiembrosPerfilPage() {
               return (
                 <div
                   key={m.id_miembro}
-                  className="bg-white rounded-xl p-3.5 px-4 shadow-sm border border-gray-100 flex items-center justify-between hover:bg-gray-50 transition"
+                  className="bg-white rounded-xl p-3.5 px-4 shadow-xs border border-gray-100 flex items-center justify-between hover:border-gray-200 hover:shadow-sm transition-all interactive-card"
                 >
                   <div className="flex items-center gap-3">
                     <div
@@ -243,17 +257,18 @@ export default function MiembrosPerfilPage() {
       {modalAbierto && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
           <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4 shadow-xl border border-gray-100">
-            <div className="flex items-center justify-between pb-4 border-b border-gray-200">
+            <div className="flex items-center justify-between gap-3 pb-4 border-b border-gray-200">
               <button
                 type="button"
                 onClick={() => setModalAbierto(false)}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold transition active:scale-95 shadow-xs"
+                className="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold transition active:scale-95 shadow-xs"
               >
                 <span className="text-gray-500 font-bold">✕</span>
                 <span>Cancelar</span>
               </button>
-              <h3 className="text-xl font-serif font-bold text-[#12241F] tracking-tight">Agregar integrante</h3>
-              <div className="w-20"></div>
+              <h3 className="text-base sm:text-lg md:text-xl font-serif font-bold text-[#12241F] tracking-tight whitespace-nowrap text-right">
+                Agregar integrante
+              </h3>
             </div>
 
             {errorModal && (

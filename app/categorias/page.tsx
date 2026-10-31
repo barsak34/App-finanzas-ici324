@@ -141,33 +141,47 @@ export default function CategoriasPage() {
         </button>
       </div>
 
-      {/* LISTA DE CATEGORÍAS (Figura 7) */}
+      {/* LISTA DE CATEGORÍAS (CON SKELETON PREVIO) */}
       {cargando ? (
-        <div className="bg-white rounded-xl p-8 text-center text-gray-400 text-sm">
-          Cargando categorías...
+        <div className="space-y-2 animate-fadeIn">
+          {[1, 2, 3, 4].map((i) => (
+            <div
+              key={i}
+              className="bg-white rounded-xl p-3.5 px-4 shadow-xs border border-gray-100 flex items-center justify-between"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full skeleton-shimmer shrink-0" />
+                <div className="space-y-1.5">
+                  <div className="w-28 h-4 rounded-md skeleton-shimmer" />
+                  <div className="w-36 h-3 rounded-md skeleton-shimmer" />
+                </div>
+              </div>
+              <div className="w-14 h-7 rounded-lg skeleton-shimmer shrink-0" />
+            </div>
+          ))}
         </div>
       ) : (
         <div className="space-y-2">
           {categorias.map((cat) => (
             <div
               key={cat.id_categoria}
-              className="bg-white rounded-xl p-3.5 px-4 shadow-sm border border-gray-100 flex items-center justify-between hover:bg-gray-50 transition"
+              className="bg-white rounded-xl p-3.5 px-4 shadow-xs border border-gray-100 flex items-center justify-between gap-3 hover:border-gray-200 hover:shadow-sm transition-all interactive-card"
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 min-w-0 flex-1">
                 <div className="w-9 h-9 rounded-full bg-[#EEF0EA] text-[#12241F] font-bold text-sm flex items-center justify-center shrink-0">
                   {cat.nombre_categoria.charAt(0).toUpperCase()}
                 </div>
-                <div>
-                  <h4 className="text-sm font-semibold text-gray-900">{cat.nombre_categoria}</h4>
+                <div className="min-w-0 flex-1">
+                  <h4 className="text-sm font-semibold text-gray-900 truncate">{cat.nombre_categoria}</h4>
                   {cat.descripcion && (
-                    <p className="text-xs text-gray-400 mt-0.5 truncate max-w-xs">{cat.descripcion}</p>
+                    <p className="text-xs text-gray-400 mt-0.5 truncate">{cat.descripcion}</p>
                   )}
                 </div>
               </div>
 
               <button
                 onClick={() => abrirEditar(cat)}
-                className="text-xs font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 px-3.5 py-1.5 rounded-lg transition"
+                className="shrink-0 text-xs font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 px-3.5 py-1.5 rounded-lg transition active:scale-95"
               >
                 Editar
               </button>
@@ -180,20 +194,19 @@ export default function CategoriasPage() {
       {modalAbierto && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
           <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-5 shadow-xl border border-gray-100">
-            {/* Cabecera modal resaltada */}
-            <div className="flex items-center justify-between pb-4 border-b border-gray-200">
+            {/* Cabecera modal resaltada y en una sola linea */}
+            <div className="flex items-center justify-between gap-3 pb-4 border-b border-gray-200">
               <button
                 type="button"
                 onClick={cerrarModal}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold transition active:scale-95 shadow-xs"
+                className="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold transition active:scale-95 shadow-xs"
               >
                 <span className="text-gray-500 font-bold">✕</span>
                 <span>Cancelar</span>
               </button>
-              <h3 className="text-xl font-serif font-bold text-[#12241F] tracking-tight">
+              <h3 className="text-base sm:text-lg md:text-xl font-serif font-bold text-[#12241F] tracking-tight whitespace-nowrap text-right">
                 {modoEdicion ? 'Editar categoría' : 'Nueva categoría'}
               </h3>
-              <div className="w-20"></div>
             </div>
 
             <form onSubmit={handleGuardar} className="space-y-4">

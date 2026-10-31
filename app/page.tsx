@@ -272,10 +272,27 @@ function HistorialContenido() {
         </div>
       </div>
 
-      {/* LISTA DE TRANSACCIONES */}
+      {/* LISTA DE TRANSACCIONES (CON SKELETON PREVIO EN VEZ DE TEXTO) */}
       {cargando ? (
-        <div className="bg-white rounded-xl p-8 text-center text-gray-400 text-sm">
-          Cargando movimientos desde MongoDB...
+        <div className="space-y-2.5 animate-fadeIn">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div
+              key={i}
+              className="bg-white rounded-xl p-3.5 px-4 shadow-xs border border-gray-100 flex items-center justify-between"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full skeleton-shimmer shrink-0" />
+                <div className="space-y-1.5">
+                  <div className="w-28 h-4 rounded-md skeleton-shimmer" />
+                  <div className="w-40 h-3 rounded-md skeleton-shimmer" />
+                </div>
+              </div>
+              <div className="text-right space-y-1.5">
+                <div className="w-20 h-5 rounded-md skeleton-shimmer ml-auto" />
+                <div className="w-12 h-3 rounded-md skeleton-shimmer ml-auto" />
+              </div>
+            </div>
+          ))}
         </div>
       ) : transacciones.length === 0 ? (
         /* ESTADO VACÍO (Figura 6: "Aún no hay movimientos") */
@@ -304,7 +321,7 @@ function HistorialContenido() {
             return (
               <div
                 key={tx.id_transaccion}
-                className="bg-white rounded-xl p-3.5 px-4 shadow-sm border border-gray-100 flex items-center justify-between hover:bg-gray-50 transition"
+                className="bg-white rounded-xl p-3.5 px-4 shadow-xs border border-gray-100 flex items-center justify-between hover:border-gray-200 hover:shadow-sm transition-all interactive-card"
               >
                 {/* Lado izquierdo: Avatar con letra coloreado y datos */}
                 <div className="flex items-center gap-3">
@@ -349,17 +366,18 @@ function HistorialContenido() {
       {modalHogarAbierto && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
           <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-5 shadow-xl border border-gray-100">
-            <div className="flex items-center justify-between pb-3 border-b border-gray-200">
+            <div className="flex items-center justify-between gap-3 pb-3 border-b border-gray-200">
               <button
                 type="button"
                 onClick={() => setModalHogarAbierto(false)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold transition active:scale-95 shadow-xs"
+                className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold transition active:scale-95 shadow-xs"
               >
                 <span>✕</span>
                 <span>Cerrar</span>
               </button>
-              <h3 className="text-xl font-serif font-bold text-[#12241F] tracking-tight">Hogares</h3>
-              <div className="w-16"></div>
+              <h3 className="text-lg md:text-xl font-serif font-bold text-[#12241F] tracking-tight whitespace-nowrap text-right">
+                Hogares
+              </h3>
             </div>
 
             {/* LISTA DE HOGARES DISPONIBLES */}

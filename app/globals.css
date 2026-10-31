@@ -50,3 +50,33 @@ input:not([type="password"]):not([type="email"]):not([type="date"]):not([type="n
 textarea {
   text-transform: capitalize;
 }
+
+/* Efecto Shimmer para Skeleton Screens */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    #e2e5dc 25%,
+    #edf0e8 37%,
+    #e2e5dc 63%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Animaciones suaves para botones y tarjetas */
+.interactive-card {
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.interactive-card:active {
+  transform: scale(0.985);
+}
+
