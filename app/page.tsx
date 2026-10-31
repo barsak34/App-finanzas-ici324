@@ -6,7 +6,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { 
   Plus, CheckCircle, ArrowDownCircle, ArrowUpCircle, Calendar, Home, ChevronDown,
   ShoppingCart, Zap, Car, UtensilsCrossed, HeartPulse, Briefcase, GraduationCap,
-  Sparkles, Wallet, Tag as TagIcon, ArrowUpRight, ArrowDownRight, Layers
+  Sparkles, Wallet, Tag as TagIcon, ArrowUpRight, ArrowDownRight, Layers,
+  Home as HomeIcon, PawPrint, Package
 } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -169,10 +170,16 @@ function HistorialContenido() {
     if (n.includes('super') || n.includes('despensa') || n.includes('alim')) {
       return { icon: ShoppingCart, bg: 'bg-emerald-50 text-emerald-900 border-emerald-200' };
     }
-    if (n.includes('serv') || n.includes('luz') || n.includes('agua') || n.includes('gas') || n.includes('basic')) {
+    if (n.includes('arriendo') || n.includes('renta') || n.includes('hogar') || n.includes('depa') || n.includes('casa')) {
+      return { icon: HomeIcon, bg: 'bg-teal-50 text-teal-900 border-teal-200' };
+    }
+    if (n.includes('cuenta') || n.includes('serv') || n.includes('luz') || n.includes('agua') || n.includes('gas') || n.includes('basic') || n.includes('internet')) {
       return { icon: Zap, bg: 'bg-amber-50 text-amber-900 border-amber-200' };
     }
-    if (n.includes('trans') || n.includes('bencina') || n.includes('auto') || n.includes('micro')) {
+    if (n.includes('mascota') || n.includes('perro') || n.includes('gato') || n.includes('vet')) {
+      return { icon: PawPrint, bg: 'bg-purple-50 text-purple-900 border-purple-200' };
+    }
+    if (n.includes('trans') || n.includes('bencina') || n.includes('auto') || n.includes('micro') || n.includes('metro')) {
       return { icon: Car, bg: 'bg-blue-50 text-blue-900 border-blue-200' };
     }
     if (n.includes('comida') || n.includes('restauran') || n.includes('salida') || n.includes('caf')) {
@@ -184,7 +191,10 @@ function HistorialContenido() {
     if (n.includes('educ') || n.includes('coleg') || n.includes('uni') || n.includes('curso')) {
       return { icon: GraduationCap, bg: 'bg-indigo-50 text-indigo-900 border-indigo-200' };
     }
-    return { icon: TagIcon, bg: 'bg-stone-100 text-stone-800 border-stone-200' };
+    if (n.includes('otro') || n.includes('vari')) {
+      return { icon: Package, bg: 'bg-sky-50 text-sky-900 border-sky-200' };
+    }
+    return { icon: TagIcon, bg: 'bg-emerald-50/60 text-[#1F5C4D] border-emerald-200' };
   };
 
   const formatearFecha = (fechaIso: string) => {
@@ -268,26 +278,6 @@ function HistorialContenido() {
             </div>
           </div>
         </div>
-
-        {/* BARRA DE RATIO FINANCIERO MENSUAL */}
-        {balance.totalIngresos > 0 && (
-          <div className="relative z-10 mt-5 pt-4 border-t border-white/10">
-            <div className="flex items-center justify-between text-xs text-emerald-100/80 mb-1.5">
-              <span className="font-medium">Ratio de gasto sobre ingresos</span>
-              <span className="font-bold">
-                {Math.min(Math.round((balance.totalGastos / balance.totalIngresos) * 100), 100)}%
-              </span>
-            </div>
-            <div className="w-full h-2 bg-black/30 rounded-full overflow-hidden p-0.5">
-              <div
-                className="h-full rounded-full transition-all duration-500 bg-gradient-to-r from-emerald-400 via-amber-300 to-rose-400"
-                style={{
-                  width: `${Math.min(Math.round((balance.totalGastos / balance.totalIngresos) * 100), 100)}%`
-                }}
-              />
-            </div>
-          </div>
-        )}
       </div>
 
       {/* FILTROS INTERACTIVOS EN FORMA DE PÍLDORA (Figuras 3 y 11) */}

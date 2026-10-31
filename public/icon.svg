@@ -1,5 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <rect width="512" height="512" rx="128" fill="#12241F"/>
   <circle cx="256" cy="256" r="160" fill="#1F5C4D"/>
-  <path d="M256 140v232M200 190h90a36 36 0 0 1 0 72H222a36 36 0 0 0 0 72h90" fill="none" stroke="#FFFFFF" stroke-width="36" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Línea vertical del signo peso -->
+  <line x1="256" y1="130" x2="256" y2="382" stroke="#FFFFFF" stroke-width="36" stroke-linecap="round"/>
+  <!-- S correcta del signo peso: curva superior hacia la izquierda y luego curva inferior hacia la derecha -->
+  <path d="M316 205c0-36-27-55-60-55-33 0-60 20-60 48 0 34 26 46 64 56 42 11 68 25 68 62 0 34-29 56-68 56-42 0-72-24-72-60" fill="none" stroke="#FFFFFF" stroke-width="36" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
