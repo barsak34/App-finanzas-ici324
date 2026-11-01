@@ -68,13 +68,13 @@ export default function CategoriasPage() {
   const getCategoriaConfig = (nombre: string) => {
     const n = (nombre || '').toLowerCase();
     if (n.includes('ingres') || n.includes('sueldo') || n.includes('remun')) {
-      return { icon: Briefcase, bg: 'bg-emerald-50 text-emerald-900 border-emerald-200' };
+      return { icon: Briefcase, bg: 'bg-emerald-100 text-emerald-900 border-emerald-300' };
     }
     if (n.includes('super') || n.includes('despensa') || n.includes('alim')) {
-      return { icon: ShoppingCart, bg: 'bg-emerald-50 text-emerald-900 border-emerald-200' };
+      return { icon: ShoppingCart, bg: 'bg-blue-100 text-blue-900 border-blue-300' };
     }
     if (n.includes('arriendo') || n.includes('renta') || n.includes('hogar') || n.includes('depa') || n.includes('casa')) {
-      return { icon: HomeIcon, bg: 'bg-teal-50 text-teal-900 border-teal-200' };
+      return { icon: HomeIcon, bg: 'bg-[#FBEBE8] text-[#8F3F2B] border-[#8F3F2B]/40' };
     }
     if (n.includes('cuenta') || n.includes('serv') || n.includes('luz') || n.includes('agua') || n.includes('gas') || n.includes('basic') || n.includes('internet')) {
       return { icon: Zap, bg: 'bg-amber-50 text-amber-900 border-amber-200' };

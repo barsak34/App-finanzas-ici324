@@ -51,17 +51,19 @@ export async function POST(request: Request) {
   try {
     const { id_hogar, nombre_completo, correo, contrasena, telefono } = await request.json();
 
-    if (!id_hogar || !nombre_completo || !correo || !contrasena) {
+    if (!id_hogar || !nombre_completo || !correo) {
       return NextResponse.json(
-        { mensaje: 'Faltan campos obligatorios para registrar miembro' },
+        { mensaje: 'Faltan campos obligatorios para registrar miembro (nombre y correo)' },
         { status: 400 }
       );
     }
 
+    const contrasenaFinal = contrasena || '123456';
+
     const nuevo = await agregarMiembro(id_hogar, {
       nombre_completo,
       correo,
-      contrasena,
+      contrasena: contrasenaFinal,
       telefono
     });
 

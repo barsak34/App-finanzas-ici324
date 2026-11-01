@@ -265,15 +265,15 @@ function HistorialContenido() {
     if (esIngreso) {
       return {
         icon: Briefcase,
-        bg: 'bg-emerald-50 text-emerald-800 border-emerald-200'
+        bg: 'bg-emerald-100 text-emerald-900 border-emerald-300'
       };
     }
     const n = (nombre || '').toLowerCase();
     if (n.includes('super') || n.includes('despensa') || n.includes('alim')) {
-      return { icon: ShoppingCart, bg: 'bg-emerald-50 text-emerald-900 border-emerald-200' };
+      return { icon: ShoppingCart, bg: 'bg-blue-100 text-blue-900 border-blue-300' };
     }
     if (n.includes('arriendo') || n.includes('renta') || n.includes('hogar') || n.includes('depa') || n.includes('casa')) {
-      return { icon: HomeIcon, bg: 'bg-teal-50 text-teal-900 border-teal-200' };
+      return { icon: HomeIcon, bg: 'bg-[#FBEBE8] text-[#8F3F2B] border-[#8F3F2B]/40' };
     }
     if (n.includes('cuenta') || n.includes('serv') || n.includes('luz') || n.includes('agua') || n.includes('gas') || n.includes('basic') || n.includes('internet')) {
       return { icon: Zap, bg: 'bg-amber-50 text-amber-900 border-amber-200' };
@@ -332,21 +332,21 @@ function HistorialContenido() {
       {/* TARJETA DE BALANCE PRINCIPAL ESTILO FINTECH CON SELECTOR DE HOGAR INTEGRADO */}
       <div className="relative overflow-hidden bg-gradient-to-br from-[#12241F] via-[#16332B] to-[#1F5C4D] rounded-2xl p-6 text-white shadow-md border border-emerald-950/40">
         {/* Cabecera integrada dentro de la tarjeta: Hogar activo en pastilla elegante */}
-        <div className="flex items-center justify-between pb-4 mb-4 border-b border-white/10">
-          <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-emerald-300/80 font-semibold">
-            <Wallet className="w-4 h-4 text-emerald-300" />
+        <div className="flex items-center justify-between gap-3 pb-4 mb-4 border-b border-white/10">
+          <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs uppercase tracking-wider text-emerald-300/80 font-semibold shrink-0">
+            <Wallet className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-300 shrink-0" />
             <span>Balance disponible</span>
           </div>
 
           <button
             type="button"
             onClick={() => setModalHogarAbierto(true)}
-            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-xs font-medium text-white border border-white/15 backdrop-blur-xs transition active:scale-95"
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-xs font-medium text-white border border-white/15 backdrop-blur-xs transition active:scale-95 max-w-[50%] min-w-0 shrink"
             title="Cambiar de hogar"
           >
-            <Home className="w-3.5 h-3.5 text-emerald-300" />
-            <span className="font-semibold">{usuario?.nombre_hogar || 'Departamento'}</span>
-            <ChevronDown className="w-3 h-3 text-emerald-300/80" />
+            <Home className="w-3.5 h-3.5 text-emerald-300 shrink-0" />
+            <span className="font-semibold truncate">{usuario?.nombre_hogar || 'Departamento'}</span>
+            <ChevronDown className="w-3 h-3 text-emerald-300/80 shrink-0" />
           </button>
         </div>
 
@@ -670,30 +670,26 @@ function HistorialContenido() {
             </div>
 
             <form onSubmit={handleGuardarEdicionTx} className="space-y-4">
-              {/* Conmutador Tipo de Movimiento */}
-              <div className="grid grid-cols-2 gap-1 bg-gray-100 p-1 rounded-xl">
-                <button
-                  type="button"
-                  onClick={() => setEditTipo('Egreso')}
-                  className={`py-2 text-xs font-semibold rounded-lg transition-all ${
-                    editTipo === 'Egreso'
-                      ? 'bg-white text-gray-900 shadow-xs'
-                      : 'text-gray-500 hover:text-gray-900'
-                  }`}
-                >
-                  Gasto
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setEditTipo('Ingreso')}
-                  className={`py-2 text-xs font-semibold rounded-lg transition-all ${
-                    editTipo === 'Ingreso'
-                      ? 'bg-white text-gray-900 shadow-xs'
-                      : 'text-gray-500 hover:text-gray-900'
-                  }`}
-                >
-                  Ingreso
-                </button>
+              {/* Indicador de Tipo de Movimiento (Lectura) */}
+              <div className="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-gray-50 border border-gray-100">
+                <span className="text-xs text-gray-500 font-medium">Tipo de movimiento</span>
+                <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full ${
+                  editTipo === 'Ingreso'
+                    ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                    : 'bg-rose-100 text-[#8F3F2B] border border-rose-200'
+                }`}>
+                  {editTipo === 'Ingreso' ? (
+                    <>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                      <span>Ingreso</span>
+                    </>
+                  ) : (
+                    <>
+                      <ArrowDownRight className="w-3.5 h-3.5" />
+                      <span>Gasto</span>
+                    </>
+                  )}
+                </span>
               </div>
 
               {/* Monto con formato de puntos automático */}
