@@ -31,12 +31,11 @@ export default function Navegacion({ children }: Props) {
 
   return (
     <div className="min-h-screen bg-[#EEF0EA] flex flex-col md:flex-row">
-      {/* SIDEBAR DE ESCRITORIO (Fig. 11 del informe) */}
       <aside className="hidden md:flex md:w-64 bg-[#12241F] text-white flex-col justify-between p-6 min-h-screen">
         <div>
-          <div className="mb-10">
-            <h1 className="text-xl font-bold tracking-tight text-white">Finanzas del Hogar</h1>
-            <p className="text-xs text-gray-400 mt-1">Control 2 - MongoDB</p>
+          <div className="mb-10 flex items-center gap-3">
+            <img src="/icon.svg" alt="Logo" className="w-9 h-9 rounded-xl shadow-xs" />
+            <h1 className="text-lg font-bold tracking-tight text-white font-serif leading-tight">Finanzas del Hogar</h1>
           </div>
 
           <nav className="space-y-2">

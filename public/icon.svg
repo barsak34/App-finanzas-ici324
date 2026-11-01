@@ -1,8 +1,27 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="128" fill="#12241F"/>
-  <circle cx="256" cy="256" r="160" fill="#1F5C4D"/>
-  <!-- Línea vertical del signo peso -->
-  <line x1="256" y1="130" x2="256" y2="382" stroke="#FFFFFF" stroke-width="36" stroke-linecap="round"/>
-  <!-- S correcta del signo peso: curva superior hacia la izquierda y luego curva inferior hacia la derecha -->
-  <path d="M316 205c0-36-27-55-60-55-33 0-60 20-60 48 0 34 26 46 64 56 42 11 68 25 68 62 0 34-29 56-68 56-42 0-72-24-72-60" fill="none" stroke="#FFFFFF" stroke-width="36" stroke-linecap="round" stroke-linejoin="round"/>
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#12241F"/>
+      <stop offset="100%" stop-color="#1F5C4D"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34D399"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+  </defs>
+  <!-- Fondo redondeado estilo app icon iOS / Android -->
+  <rect width="512" height="512" rx="128" fill="url(#bgGrad)"/>
+  
+  <!-- Círculo interior sutil de contraste -->
+  <circle cx="256" cy="256" r="170" fill="#FFFFFF" fill-opacity="0.04"/>
+
+  <!-- Techo estilizado del Hogar -->
+  <path d="M140 256 L256 152 L372 256" fill="none" stroke="#FFFFFF" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Estructura de la casa -->
+  <path d="M176 244 V344 C176 357 187 368 200 368 H312 C325 368 336 357 336 344 V244" fill="none" stroke="#FFFFFF" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Símbolo central: Diamante / Crecimiento financiero en verde menta -->
+  <path d="M256 228 L296 280 L256 332 L216 280 Z" fill="url(#accentGrad)"/>
+  <circle cx="256" cy="280" r="14" fill="#FFFFFF"/>
 </svg>

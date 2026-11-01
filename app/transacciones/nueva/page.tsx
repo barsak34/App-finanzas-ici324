@@ -35,14 +35,11 @@ export default function NuevaTransaccionPage() {
   const [errorMonto, setErrorMonto] = useState<string | null>(null);
   const [errorCategoria, setErrorCategoria] = useState<string | null>(null);
 
-  const getCategoriaConfig = (nombre: string, esIngreso: boolean) => {
-    if (esIngreso) {
-      return {
-        icon: Briefcase,
-        bg: 'bg-emerald-100 text-emerald-900 border-emerald-300'
-      };
-    }
+  const getCategoriaConfig = (nombre: string) => {
     const n = (nombre || '').toLowerCase();
+    if (n.includes('sueldo') || n.includes('ingres') || n.includes('remun') || n.includes('salario') || n.includes('honorario')) {
+      return { icon: Briefcase, bg: 'bg-emerald-100 text-emerald-900 border-emerald-300' };
+    }
     if (n.includes('super') || n.includes('despensa') || n.includes('alim')) {
       return { icon: ShoppingCart, bg: 'bg-blue-100 text-blue-900 border-blue-300' };
     }
@@ -56,7 +53,7 @@ export default function NuevaTransaccionPage() {
       return { icon: PawPrint, bg: 'bg-purple-50 text-purple-900 border-purple-200' };
     }
     if (n.includes('trans') || n.includes('bencina') || n.includes('auto') || n.includes('micro') || n.includes('metro')) {
-      return { icon: Car, bg: 'bg-blue-50 text-blue-900 border-blue-200' };
+      return { icon: Car, bg: 'bg-cyan-50 text-cyan-900 border-cyan-200' };
     }
     if (n.includes('comida') || n.includes('restauran') || n.includes('salida') || n.includes('caf')) {
       return { icon: UtensilsCrossed, bg: 'bg-orange-50 text-orange-900 border-orange-200' };
@@ -68,7 +65,7 @@ export default function NuevaTransaccionPage() {
       return { icon: GraduationCap, bg: 'bg-indigo-50 text-indigo-900 border-indigo-200' };
     }
     if (n.includes('otro') || n.includes('vari')) {
-      return { icon: Package, bg: 'bg-sky-50 text-sky-900 border-sky-200' };
+      return { icon: Package, bg: 'bg-stone-100 text-stone-800 border-stone-200' };
     }
     return { icon: TagIcon, bg: 'bg-emerald-50 text-[#1F5C4D] border-emerald-200' };
   };
@@ -176,7 +173,7 @@ export default function NuevaTransaccionPage() {
 
   const catActual = categorias.find((c) => c.id_categoria === categoriaSeleccionada);
   const catConfig = catActual
-    ? getCategoriaConfig(catActual.nombre_categoria, tipoMovimiento === 'Ingreso')
+    ? getCategoriaConfig(catActual.nombre_categoria)
     : { icon: TagIcon, bg: 'bg-gray-100 text-gray-700 border-gray-200' };
   const IconoCatActual = catConfig.icon;
 
@@ -196,21 +193,21 @@ export default function NuevaTransaccionPage() {
         </h2>
       </div>
 
-      {/* CONMUTADOR ELEGANTE GASTO / INGRESO */}
-      <div className="grid grid-cols-2 gap-1 bg-gray-100 p-1 rounded-xl">
+      {/* CONMUTADOR ELEGANTE GASTO / INGRESO EN TONOS SUAVES */}
+      <div className="grid grid-cols-2 gap-1.5 bg-gray-100/90 p-1.5 rounded-xl border border-gray-200/50">
         <button
           type="button"
           onClick={() => {
             setTipoMovimiento('Egreso');
             setErrorMonto(null);
           }}
-          className={`flex items-center justify-center gap-1.5 py-2.5 text-xs font-bold rounded-lg transition-all ${
+          className={`flex items-center justify-center gap-1.5 py-2.5 text-xs font-semibold rounded-lg transition-all ${
             tipoMovimiento === 'Egreso'
-              ? 'bg-[#8F3F2B] text-white shadow-xs'
-              : 'text-gray-600 hover:text-gray-900'
+              ? 'bg-[#FDF2F0] text-[#9A3423] border border-[#F5CDC4] shadow-xs'
+              : 'text-gray-500 hover:text-gray-800'
           }`}
         >
-          <ArrowDownRight className="w-3.5 h-3.5" />
+          <ArrowDownRight className="w-3.5 h-3.5 text-[#9A3423]" />
           <span>Gasto</span>
         </button>
         <button
@@ -219,13 +216,13 @@ export default function NuevaTransaccionPage() {
             setTipoMovimiento('Ingreso');
             setErrorMonto(null);
           }}
-          className={`flex items-center justify-center gap-1.5 py-2.5 text-xs font-bold rounded-lg transition-all ${
+          className={`flex items-center justify-center gap-1.5 py-2.5 text-xs font-semibold rounded-lg transition-all ${
             tipoMovimiento === 'Ingreso'
-              ? 'bg-[#1F5C4D] text-white shadow-xs'
-              : 'text-gray-600 hover:text-gray-900'
+              ? 'bg-[#EBF5F1] text-[#1F5C4D] border border-[#C2E3D8] shadow-xs'
+              : 'text-gray-500 hover:text-gray-800'
           }`}
         >
-          <ArrowUpRight className="w-3.5 h-3.5" />
+          <ArrowUpRight className="w-3.5 h-3.5 text-[#1F5C4D]" />
           <span>Ingreso</span>
         </button>
       </div>
@@ -289,7 +286,7 @@ export default function NuevaTransaccionPage() {
           {desplegableCatAbierto && (
             <div className="mt-1.5 p-2 rounded-xl border border-gray-200 bg-white shadow-lg space-y-1 max-h-56 overflow-y-auto animate-fadeIn z-20">
               {categorias.map((cat) => {
-                const config = getCategoriaConfig(cat.nombre_categoria, tipoMovimiento === 'Ingreso');
+                const config = getCategoriaConfig(cat.nombre_categoria);
                 const IconoItem = config.icon;
                 const seleccionado = categoriaSeleccionada === cat.id_categoria;
                 return (

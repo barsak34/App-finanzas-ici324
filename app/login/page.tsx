@@ -50,6 +50,9 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center p-4 bg-[#EEF0EA]">
       <div className="w-full max-w-sm bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
         <div className="mb-8">
+          <div className="w-12 h-12 rounded-2xl mb-4 overflow-hidden shadow-xs flex items-center justify-center">
+            <img src="/icon.svg" alt="Logo" className="w-full h-full" />
+          </div>
           <p className="text-xs uppercase tracking-wider text-gray-500 font-medium">Finanzas del Hogar</p>
           <h1 className="text-3xl font-serif font-bold text-[#12241F] mt-1">Bienvenido</h1>
         </div>
