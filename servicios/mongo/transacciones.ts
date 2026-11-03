@@ -4,6 +4,10 @@ import { getDatabase } from '@/lib/mongodb';
 export interface FiltrosTransaccion {
   id_hogar?: string;
   id_categoria?: string;
+  id_miembro?: string;
+  medio_pago?: string;
+  monto_min?: number;
+  monto_max?: number;
   tipo_movimiento?: string;
   desde?: string;
   hasta?: string;
@@ -30,6 +34,27 @@ export async function listarTransacciones(filtros: FiltrosTransaccion = {}) {
       match.id_categoria = new ObjectId(filtros.id_categoria);
     } catch {
       match.id_categoria = filtros.id_categoria;
+    }
+  }
+
+  if (filtros.id_miembro && filtros.id_miembro !== 'Todos') {
+    match.id_miembro = filtros.id_miembro;
+  }
+
+  if (filtros.medio_pago && filtros.medio_pago !== 'Todos') {
+    match.medio_pago = filtros.medio_pago;
+  }
+
+  if (
+    (filtros.monto_min !== undefined && !isNaN(filtros.monto_min)) ||
+    (filtros.monto_max !== undefined && !isNaN(filtros.monto_max))
+  ) {
+    match.monto = {};
+    if (filtros.monto_min !== undefined && !isNaN(filtros.monto_min)) {
+      match.monto.$gte = Number(filtros.monto_min);
+    }
+    if (filtros.monto_max !== undefined && !isNaN(filtros.monto_max)) {
+      match.monto.$lte = Number(filtros.monto_max);
     }
   }
 

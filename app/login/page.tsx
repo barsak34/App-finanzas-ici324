@@ -100,23 +100,26 @@ export default function LoginPage() {
 
         {/* Acceso rápido para la presentación */}
         <div className="mt-8 pt-6 border-t border-gray-100">
-          <p className="text-xs text-gray-400 mb-2 font-medium">Acceso rápido para exposición:</p>
-          <div className="grid grid-cols-2 gap-2">
+          <p className="text-xs text-gray-400 mb-2 font-medium">Accesos predefinidos para evaluación (clave: 123456):</p>
+          <div className="grid grid-cols-2 gap-2 mb-2">
             <button
               type="button"
               onClick={() => llenarCredencial('juan@ejemplo.com')}
-              className="text-xs bg-gray-50 hover:bg-gray-100 text-gray-700 py-1.5 px-2 rounded border border-gray-200 transition"
+              className="text-xs bg-gray-50 hover:bg-gray-100 text-gray-700 py-1.5 px-2 rounded-lg border border-gray-200 transition font-medium text-center"
             >
               Juan Jiménez
             </button>
             <button
               type="button"
               onClick={() => llenarCredencial('maria@ejemplo.com')}
-              className="text-xs bg-gray-50 hover:bg-gray-100 text-gray-700 py-1.5 px-2 rounded border border-gray-200 transition"
+              className="text-xs bg-gray-50 hover:bg-gray-100 text-gray-700 py-1.5 px-2 rounded-lg border border-gray-200 transition font-medium text-center"
             >
               María Lazcano
             </button>
           </div>
+          <p className="text-[11px] text-gray-400 text-center">
+            También puedes iniciar sesión con las credenciales de cualquier integrante registrado.
+          </p>
         </div>
       </div>
     </div>

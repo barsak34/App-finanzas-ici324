@@ -41,13 +41,18 @@ function HistorialContenido() {
   const [balance, setBalance] = useState<Balance>({ totalIngresos: 0, totalGastos: 0, balanceNeto: 0 });
   const [cargando, setCargando] = useState(true);
 
-  // Filtros interactivos
+  // Filtros interactivos (RF12)
   const [tipoFiltro, setTipoFiltro] = useState<'Todos' | 'Ingreso' | 'Egreso'>('Todos');
   const [categoriaFiltro, setCategoriaFiltro] = useState<string>('Todas');
+  const [miembroFiltro, setMiembroFiltro] = useState<string>('Todos');
+  const [medioPagoFiltro, setMedioPagoFiltro] = useState<string>('Todos');
+  const [montoMinFiltro, setMontoMinFiltro] = useState<string>('');
+  const [montoMaxFiltro, setMontoMaxFiltro] = useState<string>('');
   const [fechaDesde, setFechaDesde] = useState('');
   const [fechaHasta, setFechaHasta] = useState('');
   const [mostrarAviso, setMostrarAviso] = useState(!!mensajeGuardado);
   const [modalFiltrosAbierto, setModalFiltrosAbierto] = useState(false);
+  const [miembrosHogar, setMiembrosHogar] = useState<any[]>([]);
 
   // Gestión de múltiples hogares
   const [listaHogares, setListaHogares] = useState<any[]>([]);
@@ -209,6 +214,10 @@ function HistorialContenido() {
       if (idHogar) queryParams.set('id_hogar', idHogar);
       if (tipoFiltro !== 'Todos') queryParams.set('tipo', tipoFiltro);
       if (categoriaFiltro !== 'Todas') queryParams.set('id_categoria', categoriaFiltro);
+      if (miembroFiltro !== 'Todos') queryParams.set('id_miembro', miembroFiltro);
+      if (medioPagoFiltro !== 'Todos') queryParams.set('medio_pago', medioPagoFiltro);
+      if (montoMinFiltro) queryParams.set('monto_min', montoMinFiltro.replace(/\./g, ''));
+      if (montoMaxFiltro) queryParams.set('monto_max', montoMaxFiltro.replace(/\./g, ''));
       if (fechaDesde) queryParams.set('desde', fechaDesde);
       if (fechaHasta) queryParams.set('hasta', fechaHasta);
 
@@ -223,7 +232,7 @@ function HistorialContenido() {
     } finally {
       setCargando(false);
     }
-  }, [tipoFiltro, categoriaFiltro, fechaDesde, fechaHasta]);
+  }, [tipoFiltro, categoriaFiltro, miembroFiltro, medioPagoFiltro, montoMinFiltro, montoMaxFiltro, fechaDesde, fechaHasta]);
 
   useEffect(() => {
     // Verificar si hay sesión
@@ -237,11 +246,19 @@ function HistorialContenido() {
     cargarDatos(sesion.id_hogar);
     cargarHogares();
 
-    // Cargar categorías para edición
+    // Cargar categorías para edición y filtros
     fetch('/api/mongo/categorias')
       .then((res) => res.json())
       .then((data) => {
         if (data.categorias) setCategoriasHogar(data.categorias);
+      })
+      .catch((err) => console.error(err));
+
+    // Cargar integrantes del hogar para filtro RF12
+    fetch(`/api/mongo/hogar?id_hogar=${sesion.id_hogar}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.miembros) setMiembrosHogar(data.miembros);
       })
       .catch((err) => console.error(err));
   }, [router, cargarDatos]);
@@ -407,36 +424,95 @@ function HistorialContenido() {
             })}
           </div>
 
-          {/* Botón con logo típico de Filtro por Categorías */}
+          {/* Botón con logo típico de Filtros (RF12) */}
           <button
             type="button"
             onClick={() => setModalFiltrosAbierto(true)}
             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition active:scale-95 border ${
-              categoriaFiltro !== 'Todas'
+              (categoriaFiltro !== 'Todas' || miembroFiltro !== 'Todos' || medioPagoFiltro !== 'Todos' || montoMinFiltro || montoMaxFiltro)
                 ? 'bg-emerald-50 text-[#1F5C4D] border-emerald-300 shadow-xs'
                 : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100'
             }`}
           >
             <Filter className="w-3.5 h-3.5 text-[#1F5C4D]" />
             <span>
-              {categoriaFiltro === 'Todas'
-                ? 'Categorías'
-                : (categoriasHogar.find((c) => c.id_categoria === categoriaFiltro)?.nombre_categoria || 'Categoría')}
+              Filtros
+              {((categoriaFiltro !== 'Todas' ? 1 : 0) +
+                (miembroFiltro !== 'Todos' ? 1 : 0) +
+                (medioPagoFiltro !== 'Todos' ? 1 : 0) +
+                (montoMinFiltro ? 1 : 0) +
+                (montoMaxFiltro ? 1 : 0)) > 0 &&
+                ` (${
+                  (categoriaFiltro !== 'Todas' ? 1 : 0) +
+                  (miembroFiltro !== 'Todos' ? 1 : 0) +
+                  (medioPagoFiltro !== 'Todos' ? 1 : 0) +
+                  (montoMinFiltro ? 1 : 0) +
+                  (montoMaxFiltro ? 1 : 0)
+                })`}
             </span>
-            {categoriaFiltro !== 'Todas' && (
+            {(categoriaFiltro !== 'Todas' || miembroFiltro !== 'Todos' || medioPagoFiltro !== 'Todos' || montoMinFiltro || montoMaxFiltro) && (
               <span
                 onClick={(e) => {
                   e.stopPropagation();
                   setCategoriaFiltro('Todas');
+                  setMiembroFiltro('Todos');
+                  setMedioPagoFiltro('Todos');
+                  setMontoMinFiltro('');
+                  setMontoMaxFiltro('');
                 }}
                 className="w-4 h-4 rounded-full bg-emerald-200/80 hover:bg-emerald-300 flex items-center justify-center text-[10px] text-emerald-900 ml-0.5"
-                title="Quitar filtro de categoría"
+                title="Quitar todos los filtros"
               >
                 ✕
               </span>
             )}
           </button>
         </div>
+
+        {/* Píldoras de filtros activos (RF12) */}
+        {(categoriaFiltro !== 'Todas' || miembroFiltro !== 'Todos' || medioPagoFiltro !== 'Todos' || montoMinFiltro || montoMaxFiltro) && (
+          <div className="flex flex-wrap items-center gap-1.5 pt-1">
+            {categoriaFiltro !== 'Todas' && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-emerald-100 text-[#1F5C4D]">
+                <span>{categoriasHogar.find((c) => c.id_categoria === categoriaFiltro)?.nombre_categoria || 'Categoría'}</span>
+                <button type="button" onClick={() => setCategoriaFiltro('Todas')} className="text-[#1F5C4D] hover:opacity-75">✕</button>
+              </span>
+            )}
+            {miembroFiltro !== 'Todos' && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-teal-100 text-teal-800">
+                <span>{miembrosHogar.find((m) => m.id_miembro === miembroFiltro)?.nombre_completo || 'Miembro'}</span>
+                <button type="button" onClick={() => setMiembroFiltro('Todos')} className="text-teal-800 hover:opacity-75">✕</button>
+              </span>
+            )}
+            {medioPagoFiltro !== 'Todos' && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-sky-100 text-sky-800">
+                <span>{medioPagoFiltro}</span>
+                <button type="button" onClick={() => setMedioPagoFiltro('Todos')} className="text-sky-800 hover:opacity-75">✕</button>
+              </span>
+            )}
+            {(montoMinFiltro || montoMaxFiltro) && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-amber-100 text-amber-900">
+                <span>
+                  {montoMinFiltro && montoMaxFiltro
+                    ? `$${montoMinFiltro} - $${montoMaxFiltro}`
+                    : montoMinFiltro
+                    ? `≥ $${montoMinFiltro}`
+                    : `≤ $${montoMaxFiltro}`}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMontoMinFiltro('');
+                    setMontoMaxFiltro('');
+                  }}
+                  className="text-amber-900 hover:opacity-75"
+                >
+                  ✕
+                </button>
+              </span>
+            )}
+          </div>
+        )}
 
         {/* FILTROS POR FECHA CON CALENDARIO DESPLEGABLE */}
         <div className="grid grid-cols-2 gap-2 pt-2 border-t border-gray-100 text-xs">
@@ -780,10 +856,10 @@ function HistorialContenido() {
         </div>
       )}
 
-      {/* MODAL FLOTANTE PARA FILTRAR POR CATEGORÍAS */}
+      {/* MODAL FLOTANTE DE FILTROS AVANZADOS (RF12: Categoría, Miembro, Medio de pago, Monto) */}
       {modalFiltrosAbierto && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
-          <div className="bg-white rounded-2xl w-full max-w-sm p-6 space-y-4 shadow-xl border border-gray-100 max-h-[85vh] flex flex-col">
+          <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4 shadow-xl border border-gray-100 max-h-[88vh] flex flex-col">
             {/* Cabecera modal en una sola línea */}
             <div className="flex items-center justify-between pb-3 border-b border-gray-200 shrink-0">
               <div className="flex items-center gap-3">
@@ -795,73 +871,193 @@ function HistorialContenido() {
                   <span className="text-gray-500 font-bold">✕</span>
                   <span>Cerrar</span>
                 </button>
-                <h3 className="text-base sm:text-lg font-serif font-bold text-[#12241F] tracking-tight whitespace-nowrap truncate">
-                  Filtrar por categoría
+                <h3 className="text-base sm:text-lg font-serif font-bold text-[#12241F] tracking-tight whitespace-nowrap">
+                  Filtros del historial
                 </h3>
+              </div>
+              {(categoriaFiltro !== 'Todas' || miembroFiltro !== 'Todos' || medioPagoFiltro !== 'Todos' || montoMinFiltro || montoMaxFiltro) && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCategoriaFiltro('Todas');
+                    setMiembroFiltro('Todos');
+                    setMedioPagoFiltro('Todos');
+                    setMontoMinFiltro('');
+                    setMontoMaxFiltro('');
+                  }}
+                  className="text-xs text-rose-600 hover:text-rose-800 font-semibold"
+                >
+                  Limpiar
+                </button>
+              )}
+            </div>
+
+            {/* Contenedor scrolleable de secciones de filtro (RF12) */}
+            <div className="space-y-4 overflow-y-auto pr-1 flex-1 text-xs">
+              {/* 1. FILTRO POR CATEGORÍA */}
+              <div>
+                <label className="block text-xs font-bold text-[#12241F] mb-1.5 font-serif">
+                  Categoría
+                </label>
+                <div className="space-y-1 max-h-36 overflow-y-auto pr-1 border border-gray-100 rounded-xl p-1 bg-gray-50/60">
+                  <button
+                    type="button"
+                    onClick={() => setCategoriaFiltro('Todas')}
+                    className={`w-full p-2 rounded-lg flex items-center justify-between transition-all ${
+                      categoriaFiltro === 'Todas'
+                        ? 'bg-emerald-50 text-[#1F5C4D] font-bold border border-[#1F5C4D]/30 shadow-xs'
+                        : 'hover:bg-white text-gray-700'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded bg-emerald-100 text-[#1F5C4D] flex items-center justify-center font-bold text-xs">
+                        <Layers className="w-3.5 h-3.5" />
+                      </div>
+                      <span>Todas las categorías</span>
+                    </div>
+                    {categoriaFiltro === 'Todas' && <CheckCircle className="w-3.5 h-3.5 text-[#1F5C4D]" />}
+                  </button>
+
+                  {categoriasHogar.map((cat) => {
+                    const config = getCategoriaConfig(cat.nombre_categoria, false);
+                    const IconoCat = config.icon;
+                    const seleccionada = categoriaFiltro === cat.id_categoria;
+                    return (
+                      <button
+                        type="button"
+                        key={cat.id_categoria}
+                        onClick={() => setCategoriaFiltro(cat.id_categoria)}
+                        className={`w-full p-2 rounded-lg flex items-center justify-between transition-all ${
+                          seleccionada
+                            ? 'bg-emerald-50 text-[#1F5C4D] font-bold border border-[#1F5C4D]/30 shadow-xs'
+                            : 'hover:bg-white text-gray-700'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <div className={`w-6 h-6 rounded flex items-center justify-center border ${config.bg}`}>
+                            <IconoCat className="w-3 h-3" />
+                          </div>
+                          <span className="truncate">{cat.nombre_categoria}</span>
+                        </div>
+                        {seleccionada && <CheckCircle className="w-3.5 h-3.5 text-[#1F5C4D]" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* 2. FILTRO POR INTEGRANTE / MIEMBRO (RF12) */}
+              <div>
+                <label className="block text-xs font-bold text-[#12241F] mb-1.5 font-serif">
+                  Integrante responsable
+                </label>
+                <div className="space-y-1 max-h-32 overflow-y-auto pr-1 border border-gray-100 rounded-xl p-1 bg-gray-50/60">
+                  <button
+                    type="button"
+                    onClick={() => setMiembroFiltro('Todos')}
+                    className={`w-full p-2 rounded-lg flex items-center justify-between transition-all ${
+                      miembroFiltro === 'Todos'
+                        ? 'bg-emerald-50 text-[#1F5C4D] font-bold border border-[#1F5C4D]/30 shadow-xs'
+                        : 'hover:bg-white text-gray-700'
+                    }`}
+                  >
+                    <span>Todos los integrantes</span>
+                    {miembroFiltro === 'Todos' && <CheckCircle className="w-3.5 h-3.5 text-[#1F5C4D]" />}
+                  </button>
+
+                  {miembrosHogar.map((m) => {
+                    const seleccionado = miembroFiltro === m.id_miembro;
+                    return (
+                      <button
+                        type="button"
+                        key={m.id_miembro}
+                        onClick={() => setMiembroFiltro(m.id_miembro)}
+                        className={`w-full p-2 rounded-lg flex items-center justify-between transition-all ${
+                          seleccionado
+                            ? 'bg-emerald-50 text-[#1F5C4D] font-bold border border-[#1F5C4D]/30 shadow-xs'
+                            : 'hover:bg-white text-gray-700'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <div className="w-5 h-5 rounded-full bg-emerald-100 text-[#1F5C4D] font-bold text-[10px] flex items-center justify-center">
+                            {m.nombre_completo.charAt(0)}
+                          </div>
+                          <span>{m.nombre_completo}</span>
+                        </div>
+                        {seleccionado && <CheckCircle className="w-3.5 h-3.5 text-[#1F5C4D]" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* 3. FILTRO POR MEDIO DE PAGO (RF12) */}
+              <div>
+                <label className="block text-xs font-bold text-[#12241F] mb-1.5 font-serif">
+                  Medio de pago
+                </label>
+                <div className="grid grid-cols-4 gap-1.5">
+                  {['Todos', 'Débito', 'Efectivo', 'Crédito'].map((mp) => {
+                    const activo = medioPagoFiltro === mp;
+                    return (
+                      <button
+                        type="button"
+                        key={mp}
+                        onClick={() => setMedioPagoFiltro(mp)}
+                        className={`py-2 px-1 text-center rounded-lg border text-xs font-medium transition ${
+                          activo
+                            ? 'bg-emerald-50 text-[#1F5C4D] border-[#1F5C4D] font-bold shadow-xs'
+                            : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
+                        }`}
+                      >
+                        {mp}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* 4. FILTRO POR RANGO DE MONTO (RF12) */}
+              <div>
+                <label className="block text-xs font-bold text-[#12241F] mb-1.5 font-serif">
+                  Rango de monto ($)
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <span className="block text-[11px] text-gray-500 mb-1">Monto mínimo</span>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={montoMinFiltro}
+                      onChange={(e) => setMontoMinFiltro(formatearMontoInput(e.target.value))}
+                      placeholder="Ej: 5.000"
+                      className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs bg-[#FAFAFA] focus:outline-none focus:border-[#1F5C4D]"
+                    />
+                  </div>
+                  <div>
+                    <span className="block text-[11px] text-gray-500 mb-1">Monto máximo</span>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={montoMaxFiltro}
+                      onChange={(e) => setMontoMaxFiltro(formatearMontoInput(e.target.value))}
+                      placeholder="Ej: 100.000"
+                      className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs bg-[#FAFAFA] focus:outline-none focus:border-[#1F5C4D]"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Listado elegante de categorías */}
-            <div className="space-y-1.5 overflow-y-auto pr-1 flex-1">
-              {/* Opción "Todas las categorías" */}
+            {/* Pie del modal con botón aplicar */}
+            <div className="pt-3 border-t border-gray-200 shrink-0">
               <button
                 type="button"
-                onClick={() => {
-                  setCategoriaFiltro('Todas');
-                  setModalFiltrosAbierto(false);
-                }}
-                className={`w-full p-3 rounded-xl border flex items-center justify-between transition-all ${
-                  categoriaFiltro === 'Todas'
-                    ? 'bg-emerald-50/80 border-[#1F5C4D] shadow-xs'
-                    : 'bg-white border-gray-100 hover:bg-gray-50'
-                }`}
+                onClick={() => setModalFiltrosAbierto(false)}
+                className="w-full py-2.5 bg-[#1F5C4D] hover:bg-[#18473c] text-white font-semibold rounded-xl text-xs transition shadow-sm active:scale-95"
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-100 text-[#1F5C4D] flex items-center justify-center font-bold text-xs">
-                    <Layers className="w-4 h-4" />
-                  </div>
-                  <span className="font-serif font-semibold text-sm text-[#12241F]">
-                    Todas las categorías
-                  </span>
-                </div>
-                {categoriaFiltro === 'Todas' && (
-                  <CheckCircle className="w-4 h-4 text-[#1F5C4D]" />
-                )}
+                Aplicar filtros
               </button>
-
-              {/* Cada categoría individual */}
-              {categoriasHogar.map((cat) => {
-                const config = getCategoriaConfig(cat.nombre_categoria, false);
-                const IconoCat = config.icon;
-                const seleccionada = categoriaFiltro === cat.id_categoria;
-                return (
-                  <button
-                    type="button"
-                    key={cat.id_categoria}
-                    onClick={() => {
-                      setCategoriaFiltro(cat.id_categoria);
-                      setModalFiltrosAbierto(false);
-                    }}
-                    className={`w-full p-3 rounded-xl border flex items-center justify-between transition-all ${
-                      seleccionada
-                        ? 'bg-emerald-50/80 border-[#1F5C4D] shadow-xs'
-                        : 'bg-white border-gray-100 hover:bg-gray-50'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center border ${config.bg}`}>
-                        <IconoCat className="w-4 h-4" />
-                      </div>
-                      <span className="font-serif font-medium text-sm text-gray-900">
-                        {cat.nombre_categoria}
-                      </span>
-                    </div>
-                    {seleccionada && (
-                      <CheckCircle className="w-4 h-4 text-[#1F5C4D]" />
-                    )}
-                  </button>
-                );
-              })}
             </div>
           </div>
         </div>

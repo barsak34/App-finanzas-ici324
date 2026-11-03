@@ -23,6 +23,7 @@ export default function MiembrosPerfilPage() {
   const [modalAbierto, setModalAbierto] = useState(false);
   const [nombreNuevo, setNombreNuevo] = useState('');
   const [correoNuevo, setCorreoNuevo] = useState('');
+  const [claveNueva, setClaveNueva] = useState('');
   const [telefonoNuevo, setTelefonoNuevo] = useState('');
   const [guardando, setGuardando] = useState(false);
   const [errorModal, setErrorModal] = useState<string | null>(null);
@@ -94,6 +95,7 @@ export default function MiembrosPerfilPage() {
           id_hogar: usuario.id_hogar,
           nombre_completo: nombreNuevo,
           correo: correoNuevo,
+          contrasena: claveNueva.trim() || '123456',
           telefono: telefonoNuevo
         })
       });
@@ -104,6 +106,7 @@ export default function MiembrosPerfilPage() {
         setModalAbierto(false);
         setNombreNuevo('');
         setCorreoNuevo('');
+        setClaveNueva('');
         setTelefonoNuevo('');
       } else {
         setErrorModal(data.mensaje || 'Error al agregar integrante');
@@ -298,6 +301,18 @@ export default function MiembrosPerfilPage() {
                   required
                   className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs focus:outline-none focus:border-[#1F5C4D] bg-[#FAFAFA]"
                 />
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1">Contraseña de acceso (opcional)</label>
+                <input
+                  type="password"
+                  value={claveNueva}
+                  onChange={(e) => setClaveNueva(e.target.value)}
+                  placeholder="Por defecto: 123456"
+                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs focus:outline-none focus:border-[#1F5C4D] bg-[#FAFAFA]"
+                />
+                <p className="text-[10px] text-gray-400 mt-1">Si se omite, se asignará 123456 para iniciar sesión.</p>
               </div>
 
               <div>

@@ -8,12 +8,26 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const id_hogar = searchParams.get('id_hogar') || undefined;
     const id_categoria = searchParams.get('id_categoria') || undefined;
+    const id_miembro = searchParams.get('id_miembro') || undefined;
+    const medio_pago = searchParams.get('medio_pago') || undefined;
+    const monto_min = searchParams.get('monto_min') ? Number(searchParams.get('monto_min')) : undefined;
+    const monto_max = searchParams.get('monto_max') ? Number(searchParams.get('monto_max')) : undefined;
     const tipo = searchParams.get('tipo') || undefined;
     const desde = searchParams.get('desde') || undefined;
     const hasta = searchParams.get('hasta') || undefined;
 
     const [transacciones, balance] = await Promise.all([
-      listarTransacciones({ id_hogar, id_categoria, tipo_movimiento: tipo, desde, hasta }),
+      listarTransacciones({
+        id_hogar,
+        id_categoria,
+        id_miembro,
+        medio_pago,
+        monto_min,
+        monto_max,
+        tipo_movimiento: tipo,
+        desde,
+        hasta
+      }),
       obtenerBalanceHogar(id_hogar)
     ]);
 

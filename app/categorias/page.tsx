@@ -279,13 +279,13 @@ export default function CategoriasPage() {
                 />
               </div>
 
-              {/* Botón Guardar cambios (Verde oscuro, Figura 8) */}
+              {/* Botón Guardar cambios o Crear categoría */}
               <button
                 type="submit"
                 disabled={guardando}
                 className="w-full py-3 bg-[#1F5C4D] hover:bg-[#18473c] text-white font-medium rounded-xl text-xs transition shadow-sm active:scale-[0.99]"
               >
-                {guardando ? 'Guardando...' : 'Guardar cambios'}
+                {guardando ? 'Guardando...' : modoEdicion ? 'Guardar cambios' : 'Crear categoría'}
               </button>
 
               {/* Botón Eliminar categoría (Solo en modo edición) */}
