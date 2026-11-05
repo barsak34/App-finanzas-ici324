@@ -118,7 +118,6 @@ export default function LoginPage() {
             </button>
           </div>
           <p className="text-[11px] text-gray-400 text-center">
-            También puedes iniciar sesión con las credenciales de cualquier integrante registrado.
           </p>
         </div>
       </div>
