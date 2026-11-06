@@ -23,6 +23,13 @@ export async function POST(request: Request) {
       );
     }
 
+    if ('desactivado' in usuario && usuario.desactivado) {
+      return NextResponse.json(
+        { mensaje: 'Esta cuenta ha sido desactivada por el administrador del hogar' },
+        { status: 403 }
+      );
+    }
+
     return NextResponse.json({
       mensaje: 'Inicio de sesión exitoso',
       usuario
