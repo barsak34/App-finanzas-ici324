@@ -229,7 +229,7 @@ export default function NuevaTransaccionPage() {
   const IconoCatActual = catConfig.icon;
 
   return (
-    <div className="max-w-md mx-auto bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sm:p-6 space-y-5 animate-fadeIn">
+    <div className="max-w-xl lg:max-w-2xl mx-auto bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 space-y-6 animate-fadeIn">
       {/* CABECERA EN UNA SOLA LÍNEA AL LADO DE CANCELAR */}
       <div className="flex items-center gap-3 pb-3 border-b border-gray-200">
         <Link

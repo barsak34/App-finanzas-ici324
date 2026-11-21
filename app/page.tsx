@@ -347,62 +347,124 @@ function HistorialContenido() {
         </Link>
       </div>
 
-      {/* TARJETA DE BALANCE PRINCIPAL ESTILO FINTECH CON SELECTOR DE HOGAR INTEGRADO */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-[#12241F] via-[#16332B] to-[#1F5C4D] rounded-2xl p-6 text-white shadow-md border border-emerald-950/40">
-        {/* Cabecera integrada dentro de la tarjeta: Hogar activo en pastilla elegante */}
-        <div className="flex items-center justify-between gap-3 pb-4 mb-4 border-b border-white/10">
-          <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs uppercase tracking-wider text-emerald-300/80 font-semibold shrink-0">
-            <Wallet className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-300 shrink-0" />
-            <span>Balance disponible</span>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => setModalHogarAbierto(true)}
-            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-xs font-medium text-white border border-white/15 backdrop-blur-xs transition active:scale-95 max-w-[50%] min-w-0 shrink"
-            title="Cambiar de hogar"
-          >
-            <Home className="w-3.5 h-3.5 text-emerald-300 shrink-0" />
-            <span className="font-semibold truncate">{usuario?.nombre_hogar || 'Departamento'}</span>
-            <ChevronDown className="w-3 h-3 text-emerald-300/80 shrink-0" />
-          </button>
-        </div>
-
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          {/* Saldo principal */}
-          <div>
-            <p className="font-monto text-3xl md:text-4xl font-extrabold text-white tracking-tight">
-              {formatearMonto(balance.balanceNeto)}
-            </p>
-          </div>
-
-          {/* Desglose Ingresos y Gastos */}
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 border-t md:border-t-0 md:border-l border-white/10 pt-4 md:pt-0 md:pl-6">
-            <div className="bg-white/5 backdrop-blur-xs rounded-xl p-3 border border-white/10">
-              <div className="flex items-center gap-1.5 text-xs text-emerald-300 font-medium mb-0.5">
-                <ArrowUpRight className="w-3.5 h-3.5 text-emerald-400 stroke-[2.5]" />
-                <span>Ingresos</span>
+      {/* LAYOUT RESPONSIVO: 1 COLUMNA EN MÓVIL, 2 COLUMNAS EN DESKTOP (PC) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* COLUMNA IZQUIERDA EN DESKTOP: PANEL FINANCIERO Y CONTROL */}
+        <div className="lg:col-span-5 space-y-4 lg:sticky lg:top-6">
+          {/* TARJETA DE BALANCE PRINCIPAL ESTILO FINTECH CON SELECTOR DE HOGAR INTEGRADO */}
+          <div className="relative overflow-hidden bg-gradient-to-br from-[#12241F] via-[#16332B] to-[#1F5C4D] rounded-2xl p-6 text-white shadow-md border border-emerald-950/40">
+            {/* Cabecera integrada dentro de la tarjeta: Hogar activo en pastilla elegante */}
+            <div className="flex items-center justify-between gap-3 pb-4 mb-4 border-b border-white/10">
+              <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs uppercase tracking-wider text-emerald-300/80 font-semibold shrink-0">
+                <Wallet className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-300 shrink-0" />
+                <span>Balance disponible</span>
               </div>
-              <p className="font-monto text-lg sm:text-xl font-bold text-white">
-                {formatearMonto(balance.totalIngresos)}
-              </p>
+
+              <button
+                type="button"
+                onClick={() => setModalHogarAbierto(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-xs font-medium text-white border border-white/15 backdrop-blur-xs transition active:scale-95 max-w-[50%] min-w-0 shrink"
+                title="Cambiar de hogar"
+              >
+                <Home className="w-3.5 h-3.5 text-emerald-300 shrink-0" />
+                <span className="font-semibold truncate">{usuario?.nombre_hogar || 'Departamento'}</span>
+                <ChevronDown className="w-3 h-3 text-emerald-300/80 shrink-0" />
+              </button>
             </div>
 
-            <div className="bg-white/5 backdrop-blur-xs rounded-xl p-3 border border-white/10">
-              <div className="flex items-center gap-1.5 text-xs text-rose-300 font-medium mb-0.5">
-                <ArrowDownRight className="w-3.5 h-3.5 text-rose-400 stroke-[2.5]" />
-                <span>Gastos</span>
+            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+              {/* Saldo principal */}
+              <div>
+                <p className="font-monto text-3xl md:text-4xl font-extrabold text-white tracking-tight">
+                  {formatearMonto(balance.balanceNeto)}
+                </p>
               </div>
-              <p className="font-monto text-lg sm:text-xl font-bold text-white">
-                {formatearMonto(balance.totalGastos)}
-              </p>
+
+              {/* Desglose Ingresos y Gastos */}
+              <div className="grid grid-cols-2 gap-3 sm:gap-4 border-t md:border-t-0 md:border-l border-white/10 pt-4 md:pt-0 md:pl-6">
+                <div className="bg-white/5 backdrop-blur-xs rounded-xl p-3 border border-white/10">
+                  <div className="flex items-center gap-1.5 text-xs text-emerald-300 font-medium mb-0.5">
+                    <ArrowUpRight className="w-3.5 h-3.5 text-emerald-400 stroke-[2.5]" />
+                    <span>Ingresos</span>
+                  </div>
+                  <p className="font-monto text-lg sm:text-xl font-bold text-white">
+                    {formatearMonto(balance.totalIngresos)}
+                  </p>
+                </div>
+
+                <div className="bg-white/5 backdrop-blur-xs rounded-xl p-3 border border-white/10">
+                  <div className="flex items-center gap-1.5 text-xs text-rose-300 font-medium mb-0.5">
+                    <ArrowDownRight className="w-3.5 h-3.5 text-rose-400 stroke-[2.5]" />
+                    <span>Gastos</span>
+                  </div>
+                  <p className="font-monto text-lg sm:text-xl font-bold text-white">
+                    {formatearMonto(balance.totalGastos)}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* WIDGET DE SALUD FINANCIERA & MÉTRICAS (Especialmente visible y elegante en PC) */}
+          <div className="bg-white rounded-2xl p-5 shadow-xs border border-gray-100 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+              <span className="text-xs font-bold text-gray-800 uppercase tracking-wider flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-[#1F5C4D]" />
+                Salud Presupuestaria
+              </span>
+              <span className="text-xs font-bold text-[#1F5C4D]">
+                {balance.totalIngresos > 0
+                  ? Math.min(Math.round((balance.totalGastos / balance.totalIngresos) * 100), 100)
+                  : balance.totalGastos > 0 ? 100 : 0}% consumido
+              </span>
+            </div>
+
+            {/* Barra de progreso de gastos vs ingresos */}
+            <div className="space-y-1.5">
+              <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
+                <div
+                  className={`h-2.5 rounded-full transition-all duration-500 ${
+                    balance.totalIngresos > 0 && (balance.totalGastos / balance.totalIngresos) > 0.85
+                      ? 'bg-rose-500'
+                      : balance.totalIngresos > 0 && (balance.totalGastos / balance.totalIngresos) > 0.6
+                      ? 'bg-amber-500'
+                      : 'bg-[#1F5C4D]'
+                  }`}
+                  style={{
+                    width: `${
+                      balance.totalIngresos > 0
+                        ? Math.min(Math.round((balance.totalGastos / balance.totalIngresos) * 100), 100)
+                        : balance.totalGastos > 0 ? 100 : 0
+                    }%`
+                  }}
+                />
+              </div>
+              <div className="flex justify-between text-[11px] text-gray-500">
+                <span>Gastado: {formatearMonto(balance.totalGastos)}</span>
+                <span>Ingresos: {formatearMonto(balance.totalIngresos)}</span>
+              </div>
+            </div>
+
+            {/* Métricas rápidas */}
+            <div className="grid grid-cols-2 gap-2 pt-1 text-center">
+              <div className="p-2.5 bg-[#EEF0EA]/50 rounded-xl border border-gray-100">
+                <p className="text-[10px] text-gray-500 font-semibold uppercase">Movimientos</p>
+                <p className="text-base font-bold text-[#12241F]">{transacciones.length}</p>
+              </div>
+              <div className="p-2.5 bg-[#EEF0EA]/50 rounded-xl border border-gray-100">
+                <p className="text-[10px] text-gray-500 font-semibold uppercase">Hogar Activo</p>
+                <p className="text-xs font-bold text-[#12241F] truncate" title={usuario?.nombre_hogar}>
+                  {usuario?.nombre_hogar || 'Departamento'}
+                </p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* SECCIÓN DE FILTROS INTERACTIVOS CON BOTÓN DE CATEGORÍAS Y FECHAS */}
-      <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 space-y-3">
+        {/* COLUMNA DERECHA EN DESKTOP: FILTROS E HISTORIAL */}
+        <div className="lg:col-span-7 space-y-4">
+          {/* SECCIÓN DE FILTROS INTERACTIVOS CON BOTÓN DE CATEGORÍAS Y FECHAS */}
+          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 space-y-3">
         {/* Fila superior: Tipo de movimiento (Todos/Ingresos/Egresos) + Botón de Categorías con logo típico */}
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex flex-wrap items-center gap-1.5">
@@ -636,6 +698,8 @@ function HistorialContenido() {
           })}
         </div>
       )}
+        </div>
+      </div>
 
       {/* MODAL DE CAMBIAR / CREAR HOGAR */}
       {modalHogarAbierto && (

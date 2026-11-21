@@ -181,8 +181,8 @@ export default function CategoriasPage() {
 
       {/* LISTA DE CATEGORÍAS (CON SKELETON PREVIO) */}
       {cargando ? (
-        <div className="space-y-2 animate-fadeIn">
-          {[1, 2, 3, 4].map((i) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 animate-fadeIn">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
             <div
               key={i}
               className="bg-white rounded-xl p-3.5 px-4 shadow-xs border border-gray-100 flex items-center justify-between"
@@ -199,7 +199,7 @@ export default function CategoriasPage() {
           ))}
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {categorias.map((cat) => {
             const config = getCategoriaConfig(cat.nombre_categoria);
             const IconoCat = config.icon;

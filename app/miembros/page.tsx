@@ -177,8 +177,8 @@ export default function MiembrosPerfilPage() {
         </div>
 
         {cargando ? (
-          <div className="space-y-2 animate-fadeIn">
-            {[1, 2, 3].map((i) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 animate-fadeIn">
+            {[1, 2, 3, 4].map((i) => (
               <div
                 key={i}
                 className="bg-white rounded-xl p-3.5 px-4 shadow-xs border border-gray-100 flex items-center justify-between"
@@ -195,7 +195,7 @@ export default function MiembrosPerfilPage() {
             ))}
           </div>
         ) : (
-          <div className="space-y-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {miembros.map((m) => {
               const esActivo = m.estado_activo;
               return (
