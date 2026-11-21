@@ -118,7 +118,12 @@ export default function MiembrosPerfilPage() {
     }
   };
 
-  const handleCerrarSesion = () => {
+  const handleCerrarSesion = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch (e) {
+      // ignore
+    }
     localStorage.removeItem('usuario_sesion');
     router.push('/login');
   };

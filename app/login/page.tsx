@@ -25,8 +25,8 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        // En caso de error, se muestra el aviso y se conservan los datos escritos (Figura 2 del informe)
         setError(data.mensaje || 'Correo o contraseña incorrectos');
+        setContrasena(''); // Limpiar contraseña por seguridad ante intentos fallidos
         setCargando(false);
         return;
       }
