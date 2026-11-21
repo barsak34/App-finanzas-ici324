@@ -7,7 +7,7 @@ import {
   ShoppingCart, Zap, Car, UtensilsCrossed, HeartPulse, Briefcase, 
   GraduationCap, Package, Home as HomeIcon, PawPrint, Tag as TagIcon, 
   ChevronDown, CreditCard, Banknote, Calendar, Check,
-  ArrowDownRight, ArrowUpRight
+  ArrowDownRight, ArrowUpRight, Camera, X as XIcon, FileText
 } from 'lucide-react';
 
 export default function NuevaTransaccionPage() {
@@ -21,6 +21,11 @@ export default function NuevaTransaccionPage() {
   const [descripcion, setDescripcion] = useState<string>('');
   const [idMiembro, setIdMiembro] = useState<string>('');
   const [fechaRegistro, setFechaRegistro] = useState<string>(new Date().toISOString().split('T')[0]);
+
+  // Estado para comprobante/boleta en Cloudinary
+  const [archivoComprobante, setArchivoComprobante] = useState<File | null>(null);
+  const [previewComprobante, setPreviewComprobante] = useState<string | null>(null);
+  const [subiendoComprobante, setSubiendoComprobante] = useState(false);
 
   const [categorias, setCategorias] = useState<any[]>([]);
   const [miembros, setMiembros] = useState<any[]>([]);
@@ -117,6 +122,27 @@ export default function NuevaTransaccionPage() {
     if (num > 0) setErrorMonto(null);
   };
 
+  const handleSeleccionarArchivo = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert('La imagen no debe superar los 5MB');
+        return;
+      }
+      setArchivoComprobante(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewComprobante(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleQuitarArchivo = () => {
+    setArchivoComprobante(null);
+    setPreviewComprobante(null);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     let hayError = false;
@@ -142,6 +168,30 @@ export default function NuevaTransaccionPage() {
 
     setCargando(true);
     try {
+      let comprobanteUrl: string | null = null;
+
+      // 1. Si se seleccionó una boleta o comprobante, subirlo al servicio en la nube Cloudinary
+      if (archivoComprobante) {
+        setSubiendoComprobante(true);
+        try {
+          const formData = new FormData();
+          formData.append('file', archivoComprobante);
+          const resUpload = await fetch('/api/upload', {
+            method: 'POST',
+            body: formData
+          });
+          if (resUpload.ok) {
+            const dataUpload = await resUpload.json();
+            comprobanteUrl = dataUpload.url;
+          }
+        } catch (uploadErr) {
+          console.error('Error al subir a Cloudinary:', uploadErr);
+        } finally {
+          setSubiendoComprobante(false);
+        }
+      }
+
+      // 2. Guardar la transacción en MongoDB vinculando la URL de Cloudinary
       const res = await fetch('/api/mongo/transacciones', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -153,6 +203,7 @@ export default function NuevaTransaccionPage() {
           monto: montoNum,
           medio_pago: medioPago,
           descripcion_gasto: descripcion,
+          comprobante_url: comprobanteUrl,
           fecha_registro: fechaRegistro
         })
       });
@@ -444,13 +495,66 @@ export default function NuevaTransaccionPage() {
           </div>
         )}
 
+        {/* COMPROBANTE / BOLETA EN CLOUDINARY (Servicio Cloud) */}
+        <div>
+          <div className="flex items-center justify-between mb-1.5">
+            <label className="text-xs font-medium text-gray-500">
+              Comprobante o boleta
+            </label>
+            <span className="text-[10px] bg-emerald-50 text-[#1F5C4D] px-2 py-0.5 rounded font-medium border border-emerald-100">
+              Cloudinary Service
+            </span>
+          </div>
+
+          {!previewComprobante ? (
+            <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-gray-200 hover:border-[#1F5C4D] rounded-xl cursor-pointer bg-gray-50/50 hover:bg-gray-50 transition p-3 text-center group">
+              <Camera className="w-5 h-5 text-gray-400 group-hover:text-[#1F5C4D] mb-1 transition-colors" />
+              <span className="text-xs font-medium text-gray-600 group-hover:text-gray-900">Adjuntar foto de boleta o recibo</span>
+              <span className="text-[10px] text-gray-400 mt-0.5">JPG, PNG o WEBP (máx. 5MB)</span>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleSeleccionarArchivo}
+                className="hidden"
+              />
+            </label>
+          ) : (
+            <div className="relative rounded-xl border border-gray-200 p-2.5 bg-gray-50 flex items-center justify-between animate-fadeIn">
+              <div className="flex items-center gap-3">
+                <img
+                  src={previewComprobante}
+                  alt="Vista previa boleta"
+                  className="w-12 h-12 object-cover rounded-lg border border-gray-200 shadow-2xs"
+                />
+                <div className="overflow-hidden">
+                  <p className="text-xs font-semibold text-gray-800 truncate max-w-[170px]">
+                    {archivoComprobante?.name || 'Comprobante adjunto'}
+                  </p>
+                  <p className="text-[10px] text-emerald-700 font-medium flex items-center gap-1 mt-0.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
+                    Listo para subir a Cloudinary
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={handleQuitarArchivo}
+                className="p-1.5 text-gray-400 hover:text-red-600 rounded-lg hover:bg-white transition"
+                title="Quitar comprobante"
+              >
+                <XIcon className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+        </div>
+
         {/* BOTÓN GUARDAR PRINCIPAL */}
         <button
           type="submit"
-          disabled={cargando}
+          disabled={cargando || subiendoComprobante}
           className="w-full py-3.5 bg-[#1F5C4D] hover:bg-[#18473c] text-white font-semibold rounded-xl text-xs transition shadow-sm active:scale-[0.99] disabled:opacity-50 mt-4"
         >
-          {cargando ? 'Guardando transacción...' : 'Guardar transacción'}
+          {subiendoComprobante ? 'Subiendo imagen a Cloudinary...' : cargando ? 'Guardando transacción...' : 'Guardar transacción'}
         </button>
       </form>
     </div>

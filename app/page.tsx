@@ -7,7 +7,7 @@ import {
   Plus, CheckCircle, ArrowDownCircle, ArrowUpCircle, Calendar, Home, ChevronDown,
   ShoppingCart, Zap, Car, UtensilsCrossed, HeartPulse, Briefcase, GraduationCap,
   Sparkles, Wallet, Tag as TagIcon, ArrowUpRight, ArrowDownRight, Layers,
-  Home as HomeIcon, PawPrint, Package, Trash2, Filter, X
+  Home as HomeIcon, PawPrint, Package, Trash2, Filter, X, Camera, ExternalLink
 } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -22,6 +22,7 @@ interface Transaccion {
   monto: number;
   medio_pago: string;
   descripcion_gasto: string;
+  comprobante_url?: string | null;
   fecha_registro: string;
 }
 
@@ -602,9 +603,16 @@ function HistorialContenido() {
                     <IconoCat className="w-5 h-5 stroke-[2]" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h4 className="text-sm font-semibold text-gray-900 leading-tight truncate">
-                      {tx.nombre_categoria}
-                    </h4>
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <h4 className="text-sm font-semibold text-gray-900 leading-tight truncate">
+                        {tx.nombre_categoria}
+                      </h4>
+                      {tx.comprobante_url && (
+                        <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+                          <Camera className="w-2.5 h-2.5" /> Boleta
+                        </span>
+                      )}
+                    </div>
                     <p className="text-xs text-gray-500 mt-0.5 truncate">
                       {tx.nombre_miembro} • {formatearFecha(tx.fecha_registro)}
                       {tx.descripcion_gasto ? ` • ${tx.descripcion_gasto}` : ''}
@@ -842,6 +850,37 @@ function HistorialContenido() {
                   className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs focus:outline-none focus:border-[#1F5C4D] bg-[#FAFAFA]"
                 />
               </div>
+
+              {/* Comprobante / Boleta en Cloudinary */}
+              {txEditando.comprobante_url && (
+                <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium text-gray-700 flex items-center gap-1.5">
+                      <Camera className="w-3.5 h-3.5 text-[#1F5C4D]" />
+                      Comprobante adjunto
+                    </span>
+                    <span className="text-[10px] bg-emerald-50 text-[#1F5C4D] px-2 py-0.5 rounded font-medium border border-emerald-100">
+                      Cloudinary
+                    </span>
+                  </div>
+                  <div className="relative group rounded-lg overflow-hidden border border-gray-200 bg-white">
+                    <img
+                      src={txEditando.comprobante_url}
+                      alt="Boleta en Cloudinary"
+                      className="w-full max-h-40 object-contain bg-gray-50 p-1"
+                    />
+                    <a
+                      href={txEditando.comprobante_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-semibold gap-1.5"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                      <span>Ver boleta completa</span>
+                    </a>
+                  </div>
+                </div>
+              )}
 
               {/* Botón Guardar cambios */}
               <button

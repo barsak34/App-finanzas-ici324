@@ -119,6 +119,7 @@ export async function listarTransacciones(filtros: FiltrosTransaccion = {}) {
       monto: Number(tx.monto),
       medio_pago: tx.medio_pago || 'Débito',
       descripcion_gasto: tx.descripcion_gasto || '',
+      comprobante_url: tx.comprobante_url || null,
       fecha_registro: tx.fecha_registro ? new Date(tx.fecha_registro).toISOString() : new Date().toISOString()
     };
   });
@@ -180,11 +181,12 @@ export async function crearTransaccion(datos: {
   monto: number;
   medio_pago: string;
   descripcion_gasto?: string;
+  comprobante_url?: string | null;
   fecha_registro?: string;
 }) {
   const db = await getDatabase();
 
-  const nueva = {
+  const nueva: any = {
     id_hogar: new ObjectId(datos.id_hogar),
     id_miembro: datos.id_miembro,
     id_categoria: new ObjectId(datos.id_categoria),
@@ -192,6 +194,7 @@ export async function crearTransaccion(datos: {
     monto: Number(datos.monto),
     medio_pago: datos.medio_pago,
     descripcion_gasto: datos.descripcion_gasto?.trim() || '',
+    comprobante_url: datos.comprobante_url || null,
     fecha_registro: datos.fecha_registro ? new Date(datos.fecha_registro) : new Date()
   };
 
@@ -215,6 +218,7 @@ export async function actualizarTransaccion(id_transaccion: string, datos: {
   monto?: number;
   medio_pago?: string;
   descripcion_gasto?: string;
+  comprobante_url?: string | null;
   fecha_registro?: string;
 }) {
   const db = await getDatabase();
@@ -226,6 +230,7 @@ export async function actualizarTransaccion(id_transaccion: string, datos: {
   if (datos.monto !== undefined) actualizacion.monto = Number(datos.monto);
   if (datos.medio_pago) actualizacion.medio_pago = datos.medio_pago;
   if (datos.descripcion_gasto !== undefined) actualizacion.descripcion_gasto = datos.descripcion_gasto.trim();
+  if (datos.comprobante_url !== undefined) actualizacion.comprobante_url = datos.comprobante_url;
   if (datos.fecha_registro) actualizacion.fecha_registro = new Date(datos.fecha_registro);
 
   await db.collection('transacciones').updateOne(

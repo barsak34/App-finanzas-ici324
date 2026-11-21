@@ -47,7 +47,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { id_hogar, id_miembro, id_categoria, tipo_movimiento, monto, medio_pago, descripcion_gasto } = body;
+    const { id_hogar, id_miembro, id_categoria, tipo_movimiento, monto, medio_pago, descripcion_gasto, comprobante_url } = body;
 
     // Validaciones de negocio
     if (!id_hogar || !id_miembro || !id_categoria || !tipo_movimiento) {
@@ -79,7 +79,8 @@ export async function POST(request: Request) {
       tipo_movimiento,
       monto: montoNum,
       medio_pago: medio_pago || 'Débito',
-      descripcion_gasto
+      descripcion_gasto,
+      comprobante_url: comprobante_url || null
     });
 
     return NextResponse.json(
