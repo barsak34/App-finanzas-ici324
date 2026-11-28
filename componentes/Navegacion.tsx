@@ -73,7 +73,7 @@ export default function Navegacion({ children }: Props) {
                 Finanzas del Hogar
               </h1>
               <span className="text-[10px] text-emerald-400 font-medium uppercase tracking-wider">
-                Grupo 23 • ICI324
+                Gestión Familiar
               </span>
             </div>
           </div>
@@ -131,13 +131,13 @@ export default function Navegacion({ children }: Props) {
           </nav>
         </div>
 
-        {/* Pie del Sidebar: Cerrar Sesión */}
+        {/* Pie del Sidebar: Cerrar Sesión Claro y Moderno */}
         <div className="pt-4 border-t border-white/10">
           <button
             onClick={handleCerrarSesion}
-            className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs font-semibold text-rose-300 hover:text-white bg-rose-950/30 hover:bg-rose-900/50 border border-rose-800/30 rounded-xl w-full transition-all active:scale-[0.98]"
+            className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs font-semibold text-gray-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 rounded-xl w-full transition-all active:scale-[0.98]"
           >
-            <LogOut className="w-4 h-4 text-rose-400" />
+            <LogOut className="w-4 h-4 text-gray-400" />
             <span>Cerrar sesión</span>
           </button>
         </div>
@@ -146,9 +146,11 @@ export default function Navegacion({ children }: Props) {
       {/* CONTENIDO PRINCIPAL (Con margen izquierdo en Desktop para el Sidebar) */}
       <main
         key={pathname}
-        className="flex-1 md:ml-64 pb-24 md:pb-12 w-full p-4 md:p-8 max-w-7xl mx-auto animate-page-enter"
+        className="flex-1 md:ml-64 pb-24 md:pb-12 w-full p-4 md:p-8 max-w-7xl mx-auto"
       >
-        {children}
+        <div className="animate-page-enter">
+          {children}
+        </div>
       </main>
 
       {/* BOTÓN FLOTANTE (+) MÓVIL */}

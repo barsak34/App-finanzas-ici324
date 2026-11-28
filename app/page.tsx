@@ -372,32 +372,32 @@ function HistorialContenido() {
               </button>
             </div>
 
-            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="relative z-10 flex flex-col gap-4">
               {/* Saldo principal */}
               <div>
-                <p className="font-monto text-3xl md:text-4xl font-extrabold text-white tracking-tight">
+                <p className="font-monto text-3xl sm:text-4xl font-extrabold text-white tracking-tight break-words">
                   {formatearMonto(balance.balanceNeto)}
                 </p>
               </div>
 
               {/* Desglose Ingresos y Gastos */}
-              <div className="grid grid-cols-2 gap-3 sm:gap-4 border-t md:border-t-0 md:border-l border-white/10 pt-4 md:pt-0 md:pl-6">
-                <div className="bg-white/5 backdrop-blur-xs rounded-xl p-3 border border-white/10">
-                  <div className="flex items-center gap-1.5 text-xs text-emerald-300 font-medium mb-0.5">
-                    <ArrowUpRight className="w-3.5 h-3.5 text-emerald-400 stroke-[2.5]" />
+              <div className="grid grid-cols-2 gap-2.5 sm:gap-3 border-t border-white/10 pt-3.5">
+                <div className="bg-white/5 backdrop-blur-xs rounded-xl p-2.5 sm:p-3 border border-white/10 min-w-0">
+                  <div className="flex items-center gap-1.5 text-xs text-emerald-300 font-medium mb-1 truncate">
+                    <ArrowUpRight className="w-3.5 h-3.5 text-emerald-400 stroke-[2.5] shrink-0" />
                     <span>Ingresos</span>
                   </div>
-                  <p className="font-monto text-lg sm:text-xl font-bold text-white">
+                  <p className="font-monto text-base sm:text-lg lg:text-xl font-bold text-white truncate" title={formatearMonto(balance.totalIngresos)}>
                     {formatearMonto(balance.totalIngresos)}
                   </p>
                 </div>
 
-                <div className="bg-white/5 backdrop-blur-xs rounded-xl p-3 border border-white/10">
-                  <div className="flex items-center gap-1.5 text-xs text-rose-300 font-medium mb-0.5">
-                    <ArrowDownRight className="w-3.5 h-3.5 text-rose-400 stroke-[2.5]" />
+                <div className="bg-white/5 backdrop-blur-xs rounded-xl p-2.5 sm:p-3 border border-white/10 min-w-0">
+                  <div className="flex items-center gap-1.5 text-xs text-rose-300 font-medium mb-1 truncate">
+                    <ArrowDownRight className="w-3.5 h-3.5 text-rose-400 stroke-[2.5] shrink-0" />
                     <span>Gastos</span>
                   </div>
-                  <p className="font-monto text-lg sm:text-xl font-bold text-white">
+                  <p className="font-monto text-base sm:text-lg lg:text-xl font-bold text-white truncate" title={formatearMonto(balance.totalGastos)}>
                     {formatearMonto(balance.totalGastos)}
                   </p>
                 </div>

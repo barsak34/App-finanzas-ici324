@@ -38,7 +38,7 @@ export async function autenticarMiembro(correo: string, contrasenaPlana: string)
     return null;
   }
 
-  // 3. Validar contraseña (bcrypt hash o respaldo texto plano / demo)
+  // 3. Validar contraseña (bcrypt hash o contraseña plana si fue migrada)
   let claveValida = false;
   try {
     claveValida = await bcrypt.compare(contrasenaPlana, miembro.contrasena);
@@ -46,12 +46,7 @@ export async function autenticarMiembro(correo: string, contrasenaPlana: string)
     claveValida = false;
   }
 
-  if (
-    !claveValida &&
-    (miembro.contrasena === contrasenaPlana ||
-      (contrasenaPlana === '123456' &&
-        (emailNormalizado === 'juan@ejemplo.com' || emailNormalizado === 'maria@ejemplo.com')))
-  ) {
+  if (!claveValida && miembro.contrasena === contrasenaPlana) {
     claveValida = true;
   }
 

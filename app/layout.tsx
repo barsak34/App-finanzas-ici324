@@ -12,7 +12,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: 'Finanzas del Hogar',
-  description: 'Aplicación de finanzas del hogar con MongoDB, Next.js y TypeScript (Grupo 23)',
+  description: 'Aplicación colaborativa de finanzas del hogar para gestión de presupuestos familiares',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
